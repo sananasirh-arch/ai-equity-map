@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — AI Equity World Map | A4EAI</title>
+<meta name="description" content="Transparent methodology, scoring logic, data sources and limitations for the A4EAI AI Equity World Map.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:     #0c0f1a;
+  --ink2:    #1a1f35;
+  --ink3:    #252d47;
+  --purple:  #5b21b6;
+  --purple2: #7c3aed;
+  --purple3: #a78bfa;
+  --teal:    #0d9488;
+  --teal2:   #2dd4bf;
+  --amber:   #d97706;
+  --amber2:  #fbbf24;
+  --coral:   #dc2626;
+  --green:   #059669;
+  --text:    #e2e8f0;
+  --muted:   #94a3b8;
+  --faint:   #334155;
+  --border:  rgba(148,163,184,0.1);
+  --border2: rgba(148,163,184,0.2);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── Nav ── */
+.topnav{
+  position: sticky; top:0; z-index:100;
+  background: rgba(12,15,26,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex; align-items:center; justify-content:space-between;
+  height: 56px;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;
+  font-size:16px; color:#fff; text-decoration:none;
+  display:flex; align-items:center; gap:10px;
+}
+.nav-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple2),var(--teal2));
+}
+.nav-links{display:flex;gap:24px;}
+.nav-links a{
+  font-size:13px;color:var(--muted);text-decoration:none;
+  transition:color .15s;
+}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{
+  font-size:12px;font-weight:500;
+  background:linear-gradient(130deg,var(--purple2),var(--teal));
+  color:#fff;border:none;border-radius:8px;
+  padding:7px 16px;cursor:pointer;text-decoration:none;
+}
+
+/* ── Hero ── */
+.hero{
+  max-width:820px; margin:0 auto;
+  padding: 5rem 2rem 3rem;
+  text-align:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--teal2);border:1px solid rgba(45,212,191,.2);
+  border-radius:4px;padding:5px 14px;margin-bottom:1.5rem;
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.2rem,5vw,3.4rem);
+  font-weight:700;color:#fff;line-height:1.15;
+  margin-bottom:1rem;
+}
+.hero h1 em{font-style:italic;color:var(--purple3);}
+.hero-sub{
+  font-size:16px;color:var(--muted);max-width:600px;
+  margin:0 auto 2rem;line-height:1.8;
+}
+.hero-meta{
+  display:flex;align-items:center;justify-content:center;
+  gap:24px;flex-wrap:wrap;
+  font-family:'DM Mono',monospace;
+  font-size:11px;color:var(--faint);
+}
+.hero-meta span{display:flex;align-items:center;gap:6px;}
+.hero-meta span::before{
+  content:'';display:inline-block;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--purple3);
+}
+
+/* ── Divider ── */
+.divider{
+  max-width:960px;margin:0 auto;
+  border:none;border-top:1px solid var(--border);
+}
+
+/* ── Main layout ── */
+.page{
+  max-width:960px;margin:0 auto;
+  padding:0 2rem 6rem;
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:4rem;
+  align-items:start;
+}
+
+/* ── Sticky sidebar ── */
+.sidebar{
+  position:sticky;top:72px;
+  padding-top:3rem;
+}
+.sidebar-title{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:1rem;
+}
+.sidebar nav a{
+  display:block;font-size:13px;color:var(--muted);
+  text-decoration:none;padding:5px 0 5px 12px;
+  border-left:2px solid transparent;
+  transition:all .15s;line-height:1.4;margin-bottom:2px;
+}
+.sidebar nav a:hover{color:var(--text);border-left-color:var(--purple3);}
+.sidebar nav a.active{color:var(--purple3);border-left-color:var(--purple2);}
+.sidebar-sep{
+  border:none;border-top:1px solid var(--border);
+  margin:1.5rem 0;
+}
+.sidebar-note{
+  font-size:11px;color:var(--faint);line-height:1.6;
+}
+.sidebar-note a{color:var(--teal2);text-decoration:none;}
+
+/* ── Content ── */
+.content{padding-top:3rem;}
+
+.section{margin-bottom:4rem;}
+
+.section-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--purple3);margin-bottom:1rem;
+}
+.section-tag::before{
+  content:'';width:16px;height:1px;background:var(--purple3);
+}
+
+.section h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;font-weight:700;color:#fff;
+  line-height:1.2;margin-bottom:1rem;
+}
+
+.section p{
+  font-size:15px;color:var(--muted);
+  margin-bottom:1rem;line-height:1.8;
+}
+.section p strong{color:var(--text);font-weight:500;}
+
+/* ── Dimension cards ── */
+.dim-grid{
+  display:grid;gap:16px;margin-top:1.5rem;
+}
+.dim-card{
+  background:var(--ink2);
+  border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;
+  transition:border-color .2s;
+}
+.dim-card:hover{border-color:var(--border2);}
+.dim-header{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 20px;border-bottom:1px solid var(--border);
+}
+.dim-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.dim-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;font-weight:700;color:#fff;
+}
+.dim-subtitle{font-size:12px;color:var(--muted);margin-top:2px;}
+.dim-body{padding:18px 20px;}
+.dim-body p{font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.7;}
+
+.source-row{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;
+}
+.source-pill{
+  font-family:'DM Mono',monospace;
+  font-size:10px;padding:3px 10px;border-radius:4px;
+  border:1px solid var(--border2);color:var(--muted);
+  background:rgba(255,255,255,.03);
+}
+.source-pill.primary{
+  border-color:rgba(167,139,250,.4);
+  color:var(--purple3);background:rgba(124,58,237,.08);
+}
+
+.weight-bar{
+  display:flex;align-items:center;gap:10px;margin-top:12px;
+}
+.weight-label{font-size:11px;color:var(--faint);min-width:130px;}
+.weight-track{
+  flex:1;height:5px;background:rgba(255,255,255,.06);
+  border-radius:3px;overflow:hidden;
+}
+.weight-fill{height:100%;border-radius:3px;}
+.weight-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:32px;text-align:right;}
+
+/* ── Sub-indicator table ── */
+.indicator-table{
+  width:100%;border-collapse:collapse;margin-top:1rem;
+}
+.indicator-table th{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);text-align:left;
+  padding:8px 12px;border-bottom:1px solid var(--border);
+}
+.indicator-table td{
+  font-size:13px;color:var(--muted);
+  padding:9px 12px;border-bottom:1px solid var(--border);
+  vertical-align:top;line-height:1.5;
+}
+.indicator-table tr:last-child td{border-bottom:none;}
+.indicator-table td:first-child{color:var(--text);font-weight:500;}
+.badge{
+  display:inline-block;font-size:9px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:3px;margin-left:6px;
+  vertical-align:middle;
+}
+.badge-primary{background:rgba(124,58,237,.2);color:var(--purple3);}
+.badge-secondary{background:rgba(13,148,136,.15);color:var(--teal2);}
+.badge-future{background:rgba(217,119,6,.15);color:var(--amber2);}
+
+/* ── Callout boxes ── */
+.callout{
+  border-radius:12px;padding:18px 20px;margin:1.5rem 0;
+}
+.callout-warn{
+  background:rgba(217,119,6,.08);
+  border:1px solid rgba(217,119,6,.25);
+}
+.callout-warn .callout-title{color:var(--amber2);}
+.callout-info{
+  background:rgba(13,148,136,.08);
+  border:1px solid rgba(13,148,136,.2);
+}
+.callout-info .callout-title{color:var(--teal2);}
+.callout-success{
+  background:rgba(5,150,105,.08);
+  border:1px solid rgba(5,150,105,.2);
+}
+.callout-success .callout-title{color:#34d399;}
+.callout-title{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.callout p{font-size:13.5px;line-height:1.7;margin:0;}
+.callout p+p{margin-top:8px;}
+
+/* ── Scoring logic ── */
+.formula{
+  background:var(--ink3);border:1px solid var(--border);
+  border-radius:10px;padding:16px 20px;margin:1rem 0;
+  font-family:'DM Mono',monospace;font-size:12px;
+  color:var(--purple3);line-height:1.8;
+}
+.formula .comment{color:var(--faint);}
+
+/* ── Limitations grid ── */
+.limit-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin-top:1.5rem;
+}
+.limit-card{
+  background:var(--ink2);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+}
+.limit-num{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--purple3);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.limit-card h4{font-size:13px;font-weight:500;color:#fff;margin-bottom:6px;}
+.limit-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0;}
+
+/* ── Roadmap timeline ── */
+.timeline{margin-top:1.5rem;}
+.tl-item{
+  display:flex;gap:16px;margin-bottom:24px;
+}
+.tl-left{
+  display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;width:40px;
+}
+.tl-dot{
+  width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--purple2);
+  background:var(--ink);flex-shrink:0;
+}
+.tl-dot.done{background:var(--purple2);}
+.tl-dot.next{background:var(--amber2);border-color:var(--amber);}
+.tl-line{flex:1;width:1px;background:var(--border);margin:4px 0;}
+.tl-right{padding-top:0;}
+.tl-period{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--faint);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:4px;
+}
+.tl-title{font-size:14px;font-weight:500;color:#fff;margin-bottom:4px;}
+.tl-body{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* ── Advisory section ── */
+.advisor-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;margin-top:1.5rem;
+}
+.advisor-card{
+  background:var(--ink2);border:1px solid var(--border);
+  border-radius:12px;padding:16px;
+  transition:border-color .2s;
+}
+.advisor-card:hover{border-color:rgba(167,139,250,.3);}
+.advisor-org{
+  font-size:13px;font-weight:500;color:#fff;margin-bottom:4px;
+}
+.advisor-region{
+  font-size:10px;font-family:'DM Mono',monospace;
+  color:var(--teal2);letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.advisor-role{font-size:12px;color:var(--muted);line-height:1.5;}
+.advisor-status{
+  display:inline-block;margin-top:10px;
+  font-size:9px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:2px 8px;border-radius:3px;
+}
+.status-target{background:rgba(217,119,6,.15);color:var(--amber2);}
+.status-open{background:rgba(5,150,105,.15);color:#34d399;}
+
+/* ── Version log ── */
+.version-log{margin-top:1.5rem;}
+.version-row{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:12px 0;border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.version-row:last-child{border-bottom:none;}
+.v-tag{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--purple3);min-width:60px;padding-top:2px;
+}
+.v-date{color:var(--faint);min-width:90px;font-size:12px;padding-top:2px;}
+.v-desc{color:var(--muted);}
+.v-desc strong{color:var(--text);font-weight:500;}
+
+@media(max-width:700px){
+  .page{grid-template-columns:1fr;gap:0;}
+  .sidebar{position:static;padding-top:2rem;}
+  .limit-grid{grid-template-columns:1fr;}
+  .topnav .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="topnav">
+  <a class="nav-logo" href="https://www.a4eai.com">
+    <div class="nav-dot"></div>
+    A4EAI
+  </a>
+  <div class="nav-links">
+    <a href="https://www.a4eai.com">Home</a>
+    <a href="#">AI Equity Map</a>
+    <a href="#" style="color:var(--purple3);">Methodology</a>
+    <a href="#">About</a>
+  </div>
+  <a class="nav-cta" href="https://www.a4eai.com">Back to Map</a>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">
+    <span>◆</span> Methodological Framework
+  </div>
+  <h1>How We <em>Measure</em><br>AI Equity</h1>
+  <p class="hero-sub">Transparency is not optional — it is the foundation of credible advocacy. This page documents every data source, scoring decision, and known limitation of the A4EAI AI Equity World Map.</p>
+  <div class="hero-meta">
+    <span>Version 1.2</span>
+    <span>May 2025</span>
+    <span>188 countries</span>
+    <span>4 dimensions</span>
+    <span>CC BY-SA 4.0</span>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- Main -->
+<div class="page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">On this page</div>
+    <nav id="toc">
+      <a href="#overview">Overview</a>
+      <a href="#dimensions">Four dimensions</a>
+      <a href="#scoring">Scoring logic</a>
+      <a href="#sources">Data sources</a>
+      <a href="#limitations">Limitations</a>
+      <a href="#roadmap">What's next</a>
+      <a href="#advisors">Advisory partners</a>
+      <a href="#changelog">Change log</a>
+      <a href="#cite">How to cite</a>
+    </nav>
+    <hr class="sidebar-sep">
+    <div class="sidebar-note">
+      Questions or corrections?<br>
+      <a href="mailto:research@a4eai.com">research@a4eai.com</a>
+    </div>
+    <hr class="sidebar-sep">
+    <div class="sidebar-note">
+      Data download (CSV)<br>
+      <a href="#">Coming Q3 2025 ↗</a>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <!-- Overview -->
+    <section class="section" id="overview">
+      <div class="section-tag">01 — Overview</div>
+      <h2>Why this map exists</h2>
+      <p>Global AI governance conversations are increasingly moving from <strong>"how powerful is AI?"</strong> to <strong>"who benefits from AI?"</strong> — and yet most datasets and visualisations that answer this question originate in, and centre, the Global North.</p>
+      <p>The A4EAI AI Equity World Map is an attempt to make the structural nature of the global AI divide visible — not as a polemic, but as a policy tool. It is designed to serve researchers, policymakers, civil society organisations, and advocates who need a starting point for understanding where intervention is most needed.</p>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">⚠ Important limitation — read first</div>
+        <p>Version 1 of this map uses a mix of primary data (Oxford Insights GARI 2024, which is peer-reviewed) and A4EAI composite scores that have not yet been peer-reviewed. The composite scores represent our best current synthesis of available data, and all weighting decisions are documented on this page. We encourage scrutiny, replication, and critique.</p>
+      </div>
+    </section>
+
+    <!-- Four Dimensions -->
+    <section class="section" id="dimensions">
+      <div class="section-tag">02 — Dimensions</div>
+      <h2>Four dimensions of AI equity</h2>
+      <p>A key design principle is that AI equity is <strong>not one thing</strong>. A country may have strong policy governance but no compute infrastructure. Another may have high internet access but produce no AI models. We deliberately separate four distinct layers to avoid conflating them.</p>
+
+      <div class="dim-grid">
+
+        <!-- D1: Readiness -->
+        <div class="dim-card">
+          <div class="dim-header">
+            <div class="dim-icon" style="background:rgba(124,58,237,.15);">🏛</div>
+            <div>
+              <div class="dim-title">AI Readiness</div>
+              <div class="dim-subtitle">Government capacity to implement AI in public services</div>
+            </div>
+          </div>
+          <div class="dim-body">
+            <p>This is the only dimension based entirely on a primary, peer-reviewed dataset. Scores are taken directly from the <strong>Oxford Insights Government AI Readiness Index 2024</strong>, which examines 40 indicators across three pillars: Government, Technology Sector, and Data &amp; Infrastructure. The Oxford GARI is cited by UNESCO and the G20 as an authoritative benchmark.</p>
+            <div class="source-row">
+              <span class="source-pill primary">Oxford GARI 2024</span>
+              <span class="source-pill">40 indicators</span>
+              <span class="source-pill">188 countries</span>
+              <span class="source-pill">CC BY-SA 4.0</span>
+            </div>
+            <table class="indicator-table" style="margin-top:16px;">
+              <tr><th>Sub-pillar</th><th>Weight</th><th>What it measures</th></tr>
+              <tr><td>Government pillar</td><td>33%</td><td>AI strategy, governance & ethics, digital capacity</td></tr>
+              <tr><td>Technology sector</td><td>33%</td><td>Innovation capacity, human capital, market maturity</td></tr>
+              <tr><td>Data & infrastructure</td><td>33%</td><td>Data availability, representativeness, infrastructure</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- D2: Access -->
+        <div class="dim-card">
+          <div class="dim-header">
+            <div class="dim-icon" style="background:rgba(13,148,136,.15);">🌐</div>
+            <div>
+              <div class="dim-title">AI Access</div>
+              <div class="dim-subtitle">Whether people can actually reach and use AI tools</div>
+            </div>
+          </div>
+          <div class="dim-body">
+            <p>AI Access is an A4EAI composite score. It distinguishes between <strong>connectivity</strong> (internet access) and <strong>AI tool reachability</strong> — recognising that a country may have reasonable internet penetration but still face barriers: cost, language, political restriction, or device limitations. This is a distinction most indices collapse.</p>
+            <div class="source-row">
+              <span class="source-pill primary">ITU 2024</span>
+              <span class="source-pill primary">A4AI Affordability</span>
+              <span class="source-pill">GSMA Intelligence</span>
+              <span class="source-pill">A4EAI composite</span>
+            </div>
+            <table class="indicator-table" style="margin-top:16px;">
+              <tr><th>Indicator</th><th>Weight</th><th>Source</th></tr>
+              <tr><td>Internet penetration</td><td>30%</td><td>ITU 2024</td></tr>
+              <tr><td>Mobile broadband coverage</td><td>20%</td><td>GSMA Intelligence</td></tr>
+              <tr><td>Data affordability (% income)</td><td>20%</td><td>Alliance for Affordable Internet</td></tr>
+              <tr><td>AI tool political access</td><td>15%</td><td>A4EAI assessment (Freedom House + tool availability)</td></tr>
+              <tr><td>Local language AI availability <span class="badge badge-future">v2</span></td><td>15%</td><td>Masakhane, GhanaNLP, AI4Bharat datasets</td></tr>
+            </table>
+            <div class="callout callout-warn" style="margin-top:12px;">
+              <div class="callout-title">Composite — not yet peer reviewed</div>
+              <p>The AI tool political access sub-score (15%) is currently a qualitative A4EAI assessment based on Freedom House internet freedom data combined with known tool restrictions. It will be replaced by a quantitative index in v2.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- D3: Governance -->
+        <div class="dim-card">
+          <div class="dim-header">
+            <div class="dim-icon" style="background:rgba(217,119,6,.15);">⚖️</div>
+            <div>
+              <div class="dim-title">AI Governance</div>
+              <div class="dim-subtitle">National strategies, regulation, ethics & civil society voice</div>
+            </div>
+          </div>
+          <div class="dim-body">
+            <p>This dimension deliberately captures both <strong>government-led</strong> governance (national AI strategies, legislation) and <strong>civil society participation</strong> — recognising that a government can have an AI strategy with zero meaningful public input. Both are important and scored separately.</p>
+            <p>Crucially, this dimension also scores <strong>authoritarian AI deployment</strong> and <strong>surveillance AI</strong> as negative governance factors — a country that deploys AI for citizen surveillance scores lower on governance regardless of how sophisticated its strategy documents are.</p>
+            <div class="source-row">
+              <span class="source-pill primary">OECD AI Policy Observatory</span>
+              <span class="source-pill primary">Oxford GARI governance pillar</span>
+              <span class="source-pill">UNESCO RAM</span>
+              <span class="source-pill">Freedom House</span>
+              <span class="source-pill">A4EAI composite</span>
+            </div>
+            <table class="indicator-table" style="margin-top:16px;">
+              <tr><th>Indicator</th><th>Weight</th><th>Source</th></tr>
+              <tr><td>National AI strategy quality</td><td>25%</td><td>OECD AI Policy Observatory</td></tr>
+              <tr><td>AI ethics framework adoption</td><td>20%</td><td>UNESCO RAM assessments</td></tr>
+              <tr><td>Civil society participation score</td><td>20%</td><td>A4EAI assessment</td></tr>
+              <tr><td>Regulatory enforcement capacity</td><td>20%</td><td>Oxford GARI governance pillar</td></tr>
+              <tr><td>Surveillance AI penalty <span class="badge badge-secondary">new</span></td><td>−15%</td><td>Freedom House + AI Now Institute</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- D4: Co-creator -->
+        <div class="dim-card">
+          <div class="dim-header">
+            <div class="dim-icon" style="background:rgba(5,150,105,.15);">🔬</div>
+            <div>
+              <div class="dim-title">Co-creator Index</div>
+              <div class="dim-subtitle">Producing AI vs. only consuming it</div>
+            </div>
+          </div>
+          <div class="dim-body">
+            <p>This is A4EAI's most distinctive dimension and the one most directly tied to our advocacy thesis: <strong>the Global South is being incorporated into AI as a market and a data source, but excluded from authorship</strong>. The Co-creator Index measures the degree to which a country is a producer of AI — not just a user of tools built elsewhere.</p>
+            <div class="source-row">
+              <span class="source-pill primary">Stanford HAI AI Index 2024</span>
+              <span class="source-pill primary">CSET AI research data</span>
+              <span class="source-pill">Epoch AI model database</span>
+              <span class="source-pill">A4EAI composite</span>
+            </div>
+            <table class="indicator-table" style="margin-top:16px;">
+              <tr><th>Indicator</th><th>Weight</th><th>Source</th></tr>
+              <tr><td>AI research paper output</td><td>25%</td><td>CSET / Stanford HAI</td></tr>
+              <tr><td>Foundation models produced</td><td>25%</td><td>Epoch AI model database</td></tr>
+              <tr><td>AI standards body participation</td><td>20%</td><td>ISO/IEC JTC1, ITU-T, GPAI membership data</td></tr>
+              <tr><td>Domestic AI company ecosystem</td><td>15%</td><td>Stanford HAI private investment data</td></tr>
+              <tr><td>Local language model existence <span class="badge badge-secondary">new</span></td><td>15%</td><td>Masakhane, GhanaNLP, AI4Bharat, HuggingFace</td></tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Scoring Logic -->
+    <section class="section" id="scoring">
+      <div class="section-tag">03 — Scoring logic</div>
+      <h2>How scores are calculated</h2>
+      <p>All dimensions are normalised to a <strong>0–100 scale</strong>. Higher scores indicate greater equity — meaning better access, stronger governance, more co-creation capacity. The map does not produce a single composite "AI equity score" for each country, precisely because collapsing all four dimensions into one number would obscure the structural differences between them.</p>
+
+      <div class="formula">
+        <span class="comment"># Normalisation formula for composite dimensions (Access, Governance, Co-creator)</span><br>
+        score = Σ (indicator_value × indicator_weight)<br>
+        <br>
+        <span class="comment"># Where each indicator_value is normalised 0–100:</span><br>
+        normalised = (raw_value − min_value) / (max_value − min_value) × 100<br>
+        <br>
+        <span class="comment"># For the AI Readiness dimension:</span><br>
+        score = Oxford_GARI_score  <span class="comment"># direct, no transformation</span><br>
+        <br>
+        <span class="comment"># Missing data handling:</span><br>
+        missing → regional_peer_group_mean imputation<br>
+        <span class="comment"># (same method as Oxford GARI 2024, documented pp.38–39)</span>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-title">ℹ Missing data policy</div>
+        <p>Where country-level data is unavailable for a sub-indicator, we use the regional peer-group mean — the same approach as Oxford GARI 2024 (see their methodology, pp.38–39). Countries where more than 40% of sub-indicator data is missing are shown as "No data" rather than imputed.</p>
+      </div>
+
+      <div class="callout callout-success">
+        <div class="callout-title">✓ What "higher score" means</div>
+        <p>A score of 80+ means strong capability, access, or governance relative to the global distribution. A score of 20 or below indicates severe structural barriers. Scores are <strong>relative, not absolute</strong> — they reflect position within the current global distribution, which itself reflects historic inequities.</p>
+      </div>
+    </section>
+
+    <!-- Data Sources -->
+    <section class="section" id="sources">
+      <div class="section-tag">04 — Data sources</div>
+      <h2>Primary data sources</h2>
+      <p>Every score on this map can be traced to one or more of the following sources. We distinguish between <strong>primary sources</strong> (peer-reviewed or institutionally validated datasets) and <strong>secondary sources</strong> used for triangulation.</p>
+
+      <table class="indicator-table">
+        <tr>
+          <th>Source</th>
+          <th>Used for</th>
+          <th>Type</th>
+          <th>Update frequency</th>
+        </tr>
+        <tr>
+          <td>Oxford Insights GARI 2024 <span class="badge badge-primary">primary</span></td>
+          <td>AI Readiness (100%), governance pillar input</td>
+          <td>Peer-reviewed index</td>
+          <td>Annual (Dec)</td>
+        </tr>
+        <tr>
+          <td>ITU ICT Development Index</td>
+          <td>AI Access — connectivity layer</td>
+          <td>UN agency dataset</td>
+          <td>Annual</td>
+        </tr>
+        <tr>
+          <td>Stanford HAI AI Index 2024</td>
+          <td>Co-creator — research output, investment</td>
+          <td>Academic index</td>
+          <td>Annual (Apr)</td>
+        </tr>
+        <tr>
+          <td>CSET AI research database</td>
+          <td>Co-creator — paper output by country</td>
+          <td>Academic dataset</td>
+          <td>Quarterly</td>
+        </tr>
+        <tr>
+          <td>OECD AI Policy Observatory</td>
+          <td>AI Governance — strategy quality</td>
+          <td>Intergovernmental</td>
+          <td>Continuous</td>
+        </tr>
+        <tr>
+          <td>UNESCO Readiness Assessment Methodology</td>
+          <td>AI Governance — ethics framework adoption</td>
+          <td>UN agency dataset</td>
+          <td>Annual</td>
+        </tr>
+        <tr>
+          <td>GSMA Mobile Intelligence</td>
+          <td>AI Access — mobile coverage</td>
+          <td>Industry dataset</td>
+          <td>Quarterly</td>
+        </tr>
+        <tr>
+          <td>Alliance for Affordable Internet</td>
+          <td>AI Access — affordability</td>
+          <td>Civil society index</td>
+          <td>Annual</td>
+        </tr>
+        <tr>
+          <td>Epoch AI model database</td>
+          <td>Co-creator — models produced by country</td>
+          <td>Research dataset</td>
+          <td>Continuous</td>
+        </tr>
+        <tr>
+          <td>Freedom House Internet Freedom</td>
+          <td>AI Access (political), Governance (surveillance)</td>
+          <td>Civil society index</td>
+          <td>Annual</td>
+        </tr>
+        <tr>
+          <td>HuggingFace model registry <span class="badge badge-future">v2</span></td>
+          <td>Local language model availability</td>
+          <td>Open dataset</td>
+          <td>Continuous</td>
+        </tr>
+        <tr>
+          <td>Masakhane / GhanaNLP / AI4Bharat <span class="badge badge-future">v2</span></td>
+          <td>African & South Asian language AI coverage</td>
+          <td>Research communities</td>
+          <td>Ongoing</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Limitations -->
+    <section class="section" id="limitations">
+      <div class="section-tag">05 — Limitations</div>
+      <h2>Known limitations</h2>
+      <p>We believe methodological honesty strengthens rather than undermines advocacy. The following limitations are known and actively being addressed in the Version 2 roadmap.</p>
+
+      <div class="limit-grid">
+        <div class="limit-card">
+          <div class="limit-num">L01</div>
+          <h4>Composite scores not yet peer-reviewed</h4>
+          <p>Three of four dimensions (Access, Governance, Co-creator) are A4EAI composites. Only the AI Readiness dimension uses a fully peer-reviewed primary source (Oxford GARI). A methodology paper is in preparation.</p>
+        </div>
+        <div class="limit-card">
+          <div class="limit-num">L02</div>
+          <h4>Missing data disproportionately affects the Global South</h4>
+          <p>Countries with the fewest data points are often those most affected by AI inequity. Regional imputation reduces this bias but does not eliminate it.</p>
+        </div>
+        <div class="limit-card">
+          <div class="limit-num">L03</div>
+          <h4>Civil society participation is qualitative</h4>
+          <p>Our civil society sub-score currently relies on A4EAI assessments without a fully quantified rubric. A structured qualitative framework is under development with regional partners.</p>
+        </div>
+        <div class="limit-card">
+          <div class="limit-num">L04</div>
+          <h4>Local language AI not yet quantified</h4>
+          <p>The local language model availability indicator is flagged as "v2" because no standardised cross-country dataset currently exists. We are in dialogue with Masakhane and GhanaNLP to address this.</p>
+        </div>
+        <div class="limit-card">
+          <div class="limit-num">L05</div>
+          <h4>Subnational variation is invisible</h4>
+          <p>Country-level aggregation hides enormous internal inequity — for example, Nigeria's Lagos tech hub versus its rural north. Future versions will explore subnational layers where data exists.</p>
+        </div>
+        <div class="limit-card">
+          <div class="limit-num">L06</div>
+          <h4>Gender equity not yet a standalone dimension</h4>
+          <p>Gender equity in the AI workforce is not currently a scored dimension. This is a significant gap. We are sourcing data from ILO, UNESCO, and EQUALS to add this in v2.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="section" id="roadmap">
+      <div class="section-tag">06 — Roadmap</div>
+      <h2>What's next</h2>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot done"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-right">
+            <div class="tl-period">Completed — May 2025</div>
+            <div class="tl-title">Version 1 — Map launch</div>
+            <div class="tl-body">Four-dimension interactive map. Oxford GARI 2024 data integrated. Methodology page published. Share functionality and AI narrative panel live.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot next"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-right">
+            <div class="tl-period">Q3 2025</div>
+            <div class="tl-title">Version 2 — Data rigour</div>
+            <div class="tl-body">Methodology paper submitted for peer review. Local language model index added (with Masakhane). Gender equity dimension added. Downloadable CSV dataset published. Data confidence indicators per country.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot"></div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-right">
+            <div class="tl-period">Q4 2025</div>
+            <div class="tl-title">Version 3 — Advisory board & partnerships</div>
+            <div class="tl-body">Regional data partners onboarded (iHub Kenya, AI4D Africa, Bolo Pakistan). Advisory board convened. Subnational layers piloted for India, Nigeria, Brazil. API data access released.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-dot"></div>
+          </div>
+          <div class="tl-right">
+            <div class="tl-period">2026</div>
+            <div class="tl-title">Version 4 — Policy infrastructure</div>
+            <div class="tl-body">Annual update cycle formalised. Peer-reviewed journal publication. Integration with UN AI governance reporting. Compute access index added. AI affordability metrics formalised.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advisory -->
+    <section class="section" id="advisors">
+      <div class="section-tag">07 — Advisory partners</div>
+      <h2>Sought data & advisory partners</h2>
+      <p>To move from Version 1 to credible policy infrastructure, A4EAI is actively seeking partnerships with the following types of organisations. Outreach is underway.</p>
+
+      <div class="advisor-grid">
+        <div class="advisor-card">
+          <div class="advisor-org">Oxford Insights</div>
+          <div class="advisor-region">🇬🇧 Global</div>
+          <div class="advisor-role">Primary data licensor for GARI. Seeking formal data partnership and citation agreement.</div>
+          <span class="advisor-status status-open">In use</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">Masakhane</div>
+          <div class="advisor-region">🌍 Africa</div>
+          <div class="advisor-role">African NLP research community. Key partner for local language model availability index.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">GhanaNLP</div>
+          <div class="advisor-region">🇬🇭 West Africa</div>
+          <div class="advisor-role">Akan/Twi language AI. Data partner for West African language model coverage scoring.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">AI4Bharat</div>
+          <div class="advisor-region">🇮🇳 South Asia</div>
+          <div class="advisor-role">Indic language AI. Key source for South Asian language model availability data.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">iHub Kenya</div>
+          <div class="advisor-region">🇰🇪 East Africa</div>
+          <div class="advisor-role">East African tech innovation hub. Regional civil society participation data partner.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">Stanford HAI</div>
+          <div class="advisor-region">🇺🇸 Global</div>
+          <div class="advisor-role">AI Index data. Seeking formal citation partnership for research output and investment data.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">AI4D Africa</div>
+          <div class="advisor-region">🌍 Africa</div>
+          <div class="advisor-role">Pan-African AI for development network. Regional advisory and data validation partner.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+        <div class="advisor-card">
+          <div class="advisor-org">Bolo Pakistan</div>
+          <div class="advisor-region">🇵🇰 South Asia</div>
+          <div class="advisor-role">Pakistan digital rights and AI advocacy. Local civil society participation scoring partner.</div>
+          <span class="advisor-status status-target">Outreach planned</span>
+        </div>
+      </div>
+
+      <div class="callout callout-info" style="margin-top:1.5rem;">
+        <div class="callout-title">ℹ Become a data partner</div>
+        <p>If your organisation works on AI equity, local language AI, digital access, or AI governance in the Global South and would like to contribute data, validate scores, or join the advisory board, please contact <strong>research@a4eai.com</strong>.</p>
+      </div>
+    </section>
+
+    <!-- Changelog -->
+    <section class="section" id="changelog">
+      <div class="section-tag">08 — Change log</div>
+      <h2>Version history</h2>
+
+      <div class="version-log">
+        <div class="version-row">
+          <span class="v-tag">v1.2</span>
+          <span class="v-date">May 2025</span>
+          <div class="v-desc"><strong>Current version.</strong> Oxford GARI 2024 scores integrated. AI narrative panel added. Share buttons added. Surveillance AI negative scoring introduced in Governance dimension. Methodology page published.</div>
+        </div>
+        <div class="version-row">
+          <span class="v-tag">v1.1</span>
+          <span class="v-date">May 2025</span>
+          <div class="v-desc">Four-dimension map launched. Illustrative composite scores. A4EAI branding and dark navy design system.</div>
+        </div>
+        <div class="version-row">
+          <span class="v-tag">v1.0</span>
+          <span class="v-date">May 2025</span>
+          <div class="v-desc">Prototype map. Single readiness dimension. Proof of concept.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Citation -->
+    <section class="section" id="cite">
+      <div class="section-tag">09 — Citation</div>
+      <h2>How to cite this work</h2>
+      <p>This map and its composite scores are published under a <strong>Creative Commons Attribution-ShareAlike 4.0</strong> licence. You are free to use, adapt, and share with attribution.</p>
+
+      <div class="formula">
+        Alliance for Equitable AI (A4EAI). (2025). <em>AI Equity World Map, Version 1.2</em>.<br>
+        Retrieved from https://www.a4eai.com/ai-equity-map<br>
+        <br>
+        <span class="comment"># For the AI Readiness dimension specifically, also cite:</span><br>
+        Oxford Insights. (2024). <em>Government AI Readiness Index 2024</em>.<br>
+        https://oxfordinsights.com/ai-readiness (CC BY-SA 4.0)
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const links = document.querySelectorAll('#toc a');
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const active = document.querySelector(`#toc a[href="#${e.target.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  });
+},{threshold:0.3,rootMargin:'-60px 0px -60% 0px'});
+sections.forEach(s=>observer.observe(s));
+</script>
+</body>
+</html>
