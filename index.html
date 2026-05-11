@@ -1,780 +1,710 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Equity World Map — A4EAI</title>
-<meta name="description" content="An interactive map visualising the global AI equity divide — who is shaping AI, and who is being shaped by it. By the Alliance for Equitable AI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --navy:    #080d1a;
-  --navy2:   #0f1729;
-  --navy3:   #172035;
-  --navy4:   #1d2944;
-  --purple:  #7c3aed;
-  --purple2: #a78bfa;
-  --teal:    #06b6d4;
-  --teal2:   #67e8f9;
-  --text:    #e2e8f0;
-  --muted:   #94a3b8;
-  --faint:   #334155;
-  --border:  rgba(148,163,184,0.12);
-  --border2: rgba(148,163,184,0.22);
-  --c1: #7f1d1d;
-  --c2: #b91c1c;
-  --c3: #d97706;
-  --c4: #0284c7;
-  --c5: #0369a1;
-  --c6: #059669;
-  --no-data: #1a2540;
-}
+  :root {
+    --navy:    #0a0e1a;
+    --navy2:   #111827;
+    --navy3:   #1a2235;
+    --blue:    #1e3a5f;
+    --purple:  #6c3fc5;
+    --purple2: #8b5cf6;
+    --teal:    #0ea5e9;
+    --teal2:   #38bdf8;
+    --coral:   #f97316;
+    --amber:   #fbbf24;
+    --green:   #10b981;
+    --text:    #e2e8f0;
+    --muted:   #94a3b8;
+    --faint:   #334155;
+    --border:  rgba(148,163,184,0.15);
+  }
 
-body {
-  background: var(--navy);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
-}
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
 
-.wrap {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 2.5rem 1.25rem 5rem;
-}
+  .page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
 
-/* ── Header ── */
-.hdr { text-align: center; margin-bottom: 2rem; }
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--teal2); border: 1px solid rgba(103,232,249,.25);
-  border-radius: 20px; padding: 5px 14px; margin-bottom: 1rem;
-}
-.dot { width:6px; height:6px; border-radius:50%; background:var(--teal2); }
-h1 {
-  font-family: 'Syne', sans-serif; font-size: clamp(1.8rem,4.5vw,2.8rem);
-  font-weight: 700; color: #fff; line-height: 1.15; margin-bottom: .6rem;
-}
-h1 span { color: var(--purple2); }
-.sub { font-size: 13.5px; color: var(--muted); max-width: 560px; margin: 0 auto; }
+  /* Header */
+  .map-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
 
-/* ── Layer nav ── */
-.layer-nav {
-  display: flex; flex-wrap: wrap; gap: 7px;
-  margin-bottom: 1.2rem; align-items: center;
-}
-.layer-lbl { font-size: 11px; color: var(--muted); letter-spacing:.07em; text-transform:uppercase; margin-right:4px; }
-.lbtn {
-  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
-  padding: 6px 15px; border-radius: 20px;
-  border: 1px solid var(--border2);
-  background: transparent; color: var(--muted);
-  cursor: pointer; transition: all .18s; letter-spacing:.01em;
-}
-.lbtn:hover { border-color:rgba(167,139,250,.5); color:var(--text); background:rgba(124,58,237,.1); }
-.lbtn.active {
-  background: linear-gradient(130deg,var(--purple),var(--teal));
-  border-color: transparent; color: #fff;
-}
+  .eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal2);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-bottom: 1rem;
+  }
 
-/* ── Stats ── */
-.stats {
-  display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
-  gap: 10px; margin-bottom: 1.2rem;
-}
-.scard {
-  background: var(--navy3); border:1px solid var(--border);
-  border-radius: 12px; padding: 13px 16px;
-  transition: border-color .2s;
-}
-.scard:hover { border-color:rgba(167,139,250,.3); }
-.slbl { font-size: 10px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; margin-bottom:4px; }
-.sval { font-size: 24px; font-weight: 600; color:#fff; }
-.sval sub { font-size:12px; font-weight:400; color:var(--muted); }
-.sval.pos { color: #34d399; }
-.sval.neg { color: #f87171; }
-.sval.gap { color: #fbbf24; }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
 
-/* ── Map ── */
-.mapwrap {
-  position: relative; background: var(--navy2);
-  border: 1px solid var(--border); border-radius: 16px;
-  overflow: hidden; margin-bottom: .8rem;
-}
-#wsvg { display:block; width:100%; }
-.cpth { cursor:pointer; transition: opacity .12s; }
-.cpth:hover { opacity:.75; }
+  h1 em {
+    font-style: italic;
+    color: var(--purple2);
+  }
 
-/* ── Tooltip ── */
-#tip {
-  position:absolute; display:none;
-  background:var(--navy3); border:1px solid rgba(124,58,237,.5);
-  border-radius:12px; padding:12px 16px;
-  font-size:13px; pointer-events:none;
-  min-width:210px; max-width:250px; z-index:20;
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
-}
-.tn { font-weight:600; font-size:14px; color:#fff; margin-bottom:1px; }
-.tr { font-size:10px; color:var(--muted); margin-bottom:8px; }
-.tbar { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
-.tbg { flex:1; height:5px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
-.tfi { height:100%; border-radius:3px; }
-.tsc { font-size:14px; font-weight:600; min-width:26px; text-align:right; }
-.tnt { font-size:11px; color:var(--muted); line-height:1.55; }
-.tsrc { font-size:10px; color:rgba(148,163,184,.5); margin-top:5px; font-style:italic; }
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 580px;
+    margin: 0 auto;
+  }
 
-/* ── Legend ── */
-.leg { display:flex; align-items:center; gap:5px; margin-bottom:1.2rem; flex-wrap:wrap; }
-.leg-lbl { font-size:11px; color:var(--muted); }
-.ls { width:24px; height:9px; border-radius:2px; display:inline-block; }
+  /* Stat bar */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
 
-/* ── Spotlight ── */
-#spot {
-  display:none; background:var(--navy3);
-  border:1px solid rgba(124,58,237,.4); border-radius:14px;
-  padding:18px 22px; margin-bottom:1.2rem;
-}
-.sp-hdr { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
-.sp-name { font-family:'Syne',sans-serif; font-weight:700; font-size:16px; color:#fff; }
-.sp-reg {
-  display:inline-block; font-size:10px;
-  background:rgba(124,58,237,.2); color:var(--purple2);
-  padding:2px 10px; border-radius:10px; margin-top:4px;
-}
-.sp-right { text-align:right; }
-.sp-score { font-family:'Syne',sans-serif; font-size:24px; font-weight:700; }
-.sp-close {
-  font-family:'Inter',sans-serif; font-size:10px;
-  background:transparent; border:1px solid var(--border2);
-  color:var(--muted); border-radius:6px; padding:3px 9px; cursor:pointer; margin-top:4px;
-}
-.sp-close:hover { color:var(--text); border-color:var(--muted); }
-.sp-note { font-size:13px; color:var(--muted); line-height:1.65; margin-bottom:12px; }
-.sp-pills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
-.sp-pill {
-  font-size:11px; padding:3px 10px; border-radius:8px;
-  background:rgba(255,255,255,.05); border:1px solid var(--border);
-  color:var(--muted);
-}
-.sp-pill strong { color:var(--text); font-weight:500; }
-.sp-share { display:flex; gap:8px; flex-wrap:wrap; }
-.share-btn {
-  font-family:'Inter',sans-serif; font-size:11px; font-weight:500;
-  padding:6px 13px; border-radius:8px; cursor:pointer;
-  border:1px solid var(--border2); background:transparent; color:var(--muted);
-  transition:all .15s; display:inline-flex; align-items:center; gap:5px;
-}
-.share-btn:hover { color:#fff; border-color:rgba(167,139,250,.6); background:rgba(124,58,237,.15); }
-.share-btn svg { width:13px; height:13px; fill:currentColor; }
-.share-btn.copied { color:var(--teal2); border-color:rgba(103,232,249,.4); }
+  .stat-card {
+    background: var(--navy3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    transition: border-color 0.2s;
+  }
 
-/* ── AI Narrative Panel ── */
-#narrative-wrap {
-  background: var(--navy3); border:1px solid var(--border);
-  border-radius:14px; margin-bottom:1.5rem; overflow:hidden;
-}
-.narr-hdr {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 20px; border-bottom:1px solid var(--border);
-  background:rgba(124,58,237,.05);
-}
-.narr-title {
-  font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
-  color:var(--purple2); display:flex; align-items:center; gap:8px;
-}
-.ai-badge {
-  font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
-  background:linear-gradient(130deg,var(--purple),var(--teal));
-  color:#fff; padding:2px 8px; border-radius:10px;
-}
-.narr-body { padding:18px 20px; }
-#narr-text { font-size:13.5px; color:var(--muted); line-height:1.8; }
-#narr-text strong { color:var(--text); font-weight:500; }
-.narr-loading {
-  display:flex; align-items:center; gap:10px;
-  font-size:13px; color:var(--muted);
-}
-.spinner {
-  width:16px; height:16px; border:2px solid var(--border2);
-  border-top-color:var(--purple2); border-radius:50%;
-  animation: spin .7s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-.narr-regen {
-  font-family:'Inter',sans-serif; font-size:11px;
-  background:transparent; border:1px solid var(--border);
-  color:var(--muted); border-radius:7px; padding:4px 11px;
-  cursor:pointer; transition:all .15s;
-}
-.narr-regen:hover { color:var(--text); border-color:var(--border2); }
+  .stat-card:hover { border-color: rgba(139,92,246,0.4); }
 
-/* ── Footer ── */
-.ft { font-size:11px; color:var(--faint); text-align:center; margin-top:1.5rem; line-height:1.8; }
-.ft a { color:var(--teal); text-decoration:none; }
-.ft a:hover { text-decoration:underline; }
-.brand {
-  display:flex; align-items:center; justify-content:center; gap:9px;
-  margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--border);
-}
-.bdot { width:7px; height:7px; border-radius:50%; background:linear-gradient(135deg,var(--purple),var(--teal)); }
-.btxt { font-size:12px; color:var(--muted); letter-spacing:.04em; }
-.btxt strong { color:var(--purple2); }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
 
-@media(max-width:600px){
-  .wrap{padding:1.25rem 1rem 3.5rem;}
-  h1{font-size:1.55rem;}
-}
+  .stat-value {
+    font-size: 26px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .stat-value span { font-size: 13px; font-weight: 400; color: var(--muted); }
+  .stat-value.positive { color: var(--green); }
+  .stat-value.negative { color: var(--coral); }
+  .stat-value.gap { color: var(--amber); }
+
+  /* Layer buttons */
+  .layer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+
+  .layer-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .layer-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .layer-btn:hover {
+    border-color: rgba(139,92,246,0.5);
+    color: var(--text);
+    background: rgba(139,92,246,0.08);
+  }
+
+  .layer-btn.active {
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+    border-color: transparent;
+    color: #fff;
+  }
+
+  /* Map container */
+  .map-wrap {
+    position: relative;
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  #world-svg {
+    display: block;
+    width: 100%;
+  }
+
+  .country-path {
+    transition: opacity 0.15s;
+    cursor: pointer;
+  }
+  .country-path:hover { opacity: 0.8; }
+
+  /* Tooltip */
+  #tooltip {
+    position: absolute;
+    display: none;
+    background: var(--navy3);
+    border: 1px solid rgba(139,92,246,0.4);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    pointer-events: none;
+    min-width: 200px;
+    max-width: 240px;
+    z-index: 10;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .tip-name { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; }
+  .tip-region { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .tip-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .tip-bar-bg { flex: 1; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+  .tip-bar-fill { height: 100%; border-radius: 3px; }
+  .tip-score { font-size: 14px; font-weight: 600; color: #fff; min-width: 28px; text-align: right; }
+  .tip-note { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* Legend */
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .legend-label { font-size: 11px; color: var(--muted); }
+
+  .legend-swatch {
+    width: 26px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* Spotlight */
+  #spotlight {
+    display: none;
+    background: var(--navy3);
+    border: 1px solid rgba(139,92,246,0.35);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  .spot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .spot-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .spot-region {
+    font-size: 11px;
+    background: rgba(139,92,246,0.15);
+    color: var(--purple2);
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-top: 3px;
+    display: inline-block;
+  }
+
+  .spot-score {
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .spot-note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  .spot-close {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    float: right;
+    margin-top: -2px;
+  }
+  .spot-close:hover { border-color: var(--muted); color: var(--text); }
+
+  /* Footer note */
+  .data-note {
+    font-size: 11px;
+    color: var(--faint);
+    text-align: center;
+    margin-top: 2rem;
+    line-height: 1.7;
+  }
+
+  .data-note a { color: var(--teal); text-decoration: none; }
+  .data-note a:hover { text-decoration: underline; }
+
+  /* A4EAI branding */
+  .branding-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .branding-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+  }
+
+  .branding-text {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .branding-text strong { color: var(--purple2); }
+
+  @media (max-width: 600px) {
+    .page-wrapper { padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.6rem; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-    <!-- Header -->
+<div class="page-wrapper">
+
+  <!-- Header -->
   <div class="map-header">
     <span class="eyebrow">A4EAI Research Tool</span>
     <h1>The <em>AI Equity</em> World Map</h1>
     <p class="subtitle">Visualising the global divide — who is shaping AI, and who is being shaped by it. Click any country to explore.</p>
   </div>
-  
 
   <!-- Layer nav -->
   <div class="layer-nav">
-    <span class="layer-lbl">View by:</span>
-    <button class="lbtn active" onclick="setLayer('readiness')" id="btn-readiness">AI Readiness</button>
-    <button class="lbtn" onclick="setLayer('access')" id="btn-access">AI Access</button>
-    <button class="lbtn" onclick="setLayer('governance')" id="btn-governance">AI Governance</button>
-    <button class="lbtn" onclick="setLayer('cocreator')" id="btn-cocreator">Co-creator Index</button>
+    <span class="layer-label">View by:</span>
+    <button class="layer-btn active" onclick="setLayer('readiness')" id="btn-readiness">AI Readiness</button>
+    <button class="layer-btn" onclick="setLayer('access')" id="btn-access">AI Access</button>
+    <button class="layer-btn" onclick="setLayer('governance')" id="btn-governance">AI Governance</button>
+    <button class="layer-btn" onclick="setLayer('cocreator')" id="btn-cocreator">Co-creator Index</button>
   </div>
 
   <!-- Stats -->
-  <div class="stats" id="stats"></div>
+  <div class="stat-bar" id="stats-bar"></div>
 
   <!-- Spotlight -->
-  <div id="spot"></div>
+  <div id="spotlight"></div>
 
   <!-- Map -->
-  <div class="mapwrap" id="mc">
-    <svg id="wsvg" viewBox="0 0 960 500" role="img" aria-label="Interactive world map showing AI equity scores by country"></svg>
-    <div id="tip"></div>
+  <div class="map-wrap" id="map-container">
+    <svg id="world-svg" viewBox="0 0 960 500"></svg>
+    <div id="tooltip"></div>
   </div>
 
   <!-- Legend -->
-  <div class="leg">
-    <span class="leg-lbl">Lower equity</span>
-    <span class="ls" style="background:var(--c1)"></span>
-    <span class="ls" style="background:var(--c2)"></span>
-    <span class="ls" style="background:var(--c3)"></span>
-    <span class="ls" style="background:var(--c4)"></span>
-    <span class="ls" style="background:var(--c5)"></span>
-    <span class="ls" style="background:var(--c6)"></span>
-    <span class="leg-lbl">Higher equity</span>
-    <span style="margin-left:12px" class="leg-lbl">No data</span>
-    <span class="ls" style="background:var(--no-data);border:1px solid var(--faint)"></span>
+  <div class="legend-row">
+    <span class="legend-label">Lower equity</span>
+    <span class="legend-swatch" style="background:#7f1d1d;"></span>
+    <span class="legend-swatch" style="background:#c2410c;"></span>
+    <span class="legend-swatch" style="background:#d97706;"></span>
+    <span class="legend-swatch" style="background:#0ea5e9;"></span>
+    <span class="legend-swatch" style="background:#0284c7;"></span>
+    <span class="legend-swatch" style="background:#10b981;"></span>
+    <span class="legend-label">Higher equity</span>
+    <span style="margin-left:16px;" class="legend-label">— No data</span>
+    <span class="legend-swatch" style="background:#1e293b;border:1px solid #334155;"></span>
   </div>
 
-  <!-- AI Narrative Panel -->
-  <div id="narrative-wrap">
-    <div class="narr-hdr">
-      <div class="narr-title">
-        <span>A4EAI Equity Analysis</span>
-        <span class="ai-badge">AI Generated</span>
-      </div>
-      <button class="narr-regen" id="regen-btn" onclick="generateNarrative()">↻ Regenerate</button>
-    </div>
-    <div class="narr-body">
-      <div id="narr-text">
-        <div class="narr-loading"><div class="spinner"></div>Generating equity analysis…</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <p class="ft">
-    AI Readiness scores sourced from the <a href="https://oxfordinsights.com/ai-readiness" target="_blank">Oxford Insights Government AI Readiness Index 2024</a> (CC BY-SA 4.0).
-    Access, Governance &amp; Co-creator dimensions are A4EAI composite scores drawing on ITU, UNESCO, OECD and CSET data.
-    Full methodology at <a href="https://a4eai.com/ai-equity-map-methodology" target="_blank">a4eai.com/methodology</a>.
+  <!-- Data note -->
+  <p class="data-note">
+    Scores are indicative, synthesised from the <a href="https://oxfordinsights.com/ai-readiness" target="_blank">Oxford Government AI Readiness Index</a>,
+    <a href="https://www.tortoisemedia.com/intelligence/global-ai" target="_blank">Tortoise Global AI Index</a>,
+    ITU connectivity data, and UNESCO AI research metrics.
+    Full methodology at <a href="methodology.html" target="_blank">a4eai.com/methodology</a>.
   </p>
-  <div class="brand">
-    <div class="bdot"></div>
-    <span class="btxt">Alliance for Equitable AI &nbsp;·&nbsp; <strong>a4eai.com</strong></span>
-    <div class="bdot"></div>
+
+  <div class="branding-bar">
+    <div class="branding-dot"></div>
+    <span class="branding-text">Alliance for Equitable AI &nbsp;·&nbsp; <strong>a4eai.com</strong></span>
+    <div class="branding-dot"></div>
   </div>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
-// ── Real Oxford 2024 GARI scores + A4EAI composite layers ──
-// Oxford 2024 top: US 87.03, Singapore 84.25, South Korea 79.98, France 79.36, UK 78.88
-// Canada 78.18, Netherlands 77.23, Germany 76.90, Finland 76.48, Australia 75.00
-// Brazil 65.89, Chile 63.19, UAE 75.66, Saudi Arabia 72.36, Israel 74.52
-// Sub-Saharan Africa avg ~28, South Asia avg 42.28, LatAm avg 42.99
-// Global avg 47.59, North America avg 82.60, W.Europe avg 69.56
-// Scores normalised to 0-100 scale where Oxford uses 0-100 already
-
 const layers = {
   readiness: {
-    label:"AI Readiness Score",
-    desc:"Government AI strategy, tech sector maturity & data infrastructure",
-    source:"Oxford Insights Government AI Readiness Index 2024",
-    countries:{
-      "840":{n:"United States",v:87,r:"North America",note:"Leads globally in AI readiness, driven by unmatched Technology Sector strength — hosting OpenAI, Google DeepMind, Anthropic and Meta AI. Oxford score: 87.03."},
-      "826":{n:"United Kingdom",v:79,r:"Europe",note:"Ranks 5th globally. Home to DeepMind; hosted the Bletchley Park AI Safety Summit. Oxford score: 78.88."},
-      "276":{n:"Germany",v:77,r:"Europe",note:"8th globally. Industrial AI strength and EU AI Act co-architect. Oxford score: 76.90."},
-      "250":{n:"France",v:79,r:"Europe",note:"4th globally; hosts Mistral AI and appointed first Secretary of State for AI in 2024. Oxford score: 79.36."},
-      "124":{n:"Canada",v:78,r:"North America",note:"6th globally. Birthplace of deep learning; launched Canadian AI Safety Institute in 2024. Oxford score: 78.18."},
-      "036":{n:"Australia",v:75,r:"Oceania",note:"10th globally. Strong national AI strategy; advancing Indo-Pacific AI governance dialogue. Oxford score: ~75."},
-      "392":{n:"Japan",v:73,r:"Asia-Pacific",note:"Strong Asia-Pacific performer. Established its own AI Safety Institute after the Seoul Summit 2024."},
-      "702":{n:"Singapore",v:84,r:"Asia-Pacific",note:"2nd globally overall; world leader in Government and Data & Infrastructure pillars. Oxford score: 84.25."},
-      "410":{n:"South Korea",v:80,r:"Asia-Pacific",note:"3rd globally. Hosted 2024 AI Safety Seoul Summit; launched national AI Safety Institute. Oxford score: 79.98."},
-      "156":{n:"China",v:68,r:"Asia-Pacific",note:"Ranked 23rd in 2024 Oxford index. DeepSeek and Qwen rival Western models. State investment exceeds US$140bn."},
-      "356":{n:"India",v:52,r:"South Asia",note:"South & Central Asia leader. IndiaAI Mission aims to build domestic AI ecosystem. Oxford avg for region: 42.28."},
-      "076":{n:"Brazil",v:66,r:"Latin America",note:"Top LatAm performer (Oxford: 65.89). BRL 23bn AI investment plan launched in 2024; top 50 globally."},
-      "152":{n:"Chile",v:63,r:"Latin America",note:"2nd in LatAm (Oxford: 63.19). Updated national AI strategy in 2024; strong governance & ethics score."},
-      "858":{n:"Uruguay",v:62,r:"Latin America",note:"3rd in LatAm (Oxford: 62.21). Clear Vision score of 100; co-authored Montevideo Declaration on AI ethics."},
-      "566":{n:"Nigeria",v:34,r:"Africa",note:"Launched national AI Scaling Hub in 2025; released national AI strategy in 2024. Sub-Saharan Africa average: ~28."},
-      "404":{n:"Kenya",v:38,r:"Africa",note:"Top Sub-Saharan performer alongside South Africa. Growing fintech and AI ecosystem in Nairobi."},
-      "710":{n:"South Africa",v:40,r:"Africa",note:"Highest AI readiness on the continent; Presidential AI Commission established."},
-      "818":{n:"Egypt",v:30,r:"Africa/MENA",note:"National AI strategy exists; implementation remains limited. MENA regional average: 48.50."},
-      "784":{n:"UAE",v:76,r:"MENA",note:"MENA leader (Oxford: 75.66); entered global top 15 in 2024. TII and G42 driving AI ecosystem."},
-      "682":{n:"Saudi Arabia",v:72,r:"MENA",note:"Oxford: 72.36. Project Transcendence — $100bn AI hub plan — launched at FII Summit 2024."},
-      "376":{n:"Israel",v:75,r:"MENA",note:"Oxford: 74.52. Released first national AI strategy in 2024. Strong deep tech ecosystem."},
-      "586":{n:"Pakistan",v:27,r:"South Asia",note:"Moved up in 2025 Oxford rankings. National AI Policy exists; implementation and talent retention remain challenges."},
-      "050":{n:"Bangladesh",v:20,r:"South Asia",note:"Digital Bangladesh policy in place; AI governance nearly absent. Connectivity infrastructure growing."},
-      "686":{n:"Senegal",v:22,r:"Africa",note:"Released national AI strategy (2023) with AU and Team Europe support. Sub-Saharan Africa pioneer."},
-      "646":{n:"Rwanda",v:28,r:"Africa",note:"First low-income country in Sub-Saharan Africa to release national AI strategy. A GIZ FAIR Forward partner."},
-      "288":{n:"Ghana",v:26,r:"Africa",note:"Formalised national AI strategy in 2024. Part of the growing Sub-Saharan Africa strategy wave."},
-      "360":{n:"Indonesia",v:48,r:"SE Asia",note:"Large digital economy; national AI strategy active; partnered with NVIDIA for R&D infrastructure."},
-      "704":{n:"Vietnam",v:44,r:"SE Asia",note:"NVIDIA announced AI R&D centre in Vietnam in 2024. Growing tech talent base; FPT AI active."},
-      "458":{n:"Malaysia",v:61,r:"SE Asia",note:"Oxford 2023: 68.71 — well above upper-middle-income average. National AI roadmap strong in STEM skills."},
-      "484":{n:"Mexico",v:44,r:"Latin America",note:"Created Agency for Digital Transformation in 2024. LatAm integration driving AI adoption."},
-      "170":{n:"Colombia",v:38,r:"Latin America",note:"AI governance discussions underway; civil society active. Signed Montevideo Declaration."},
-      "032":{n:"Argentina",v:46,r:"Latin America",note:"Strong STEM tradition; Mercado Libre AI growing. Economic instability limits sustained investment."},
-      "604":{n:"Peru",v:33,r:"Latin America",note:"Early-stage AI policy. Rural digital divide significant. Part of Latam-GPT regional initiative."},
-      "752":{n:"Sweden",v:80,r:"Europe",note:"Nordic AI governance leader; high digital maturity and AI ethics discourse. Top 5 in Europe."},
-      "528":{n:"Netherlands",v:77,r:"Europe",note:"7th globally (Oxford: 77.23). Published national Generative AI vision in Jan 2024. ASML chip ecosystem."},
-      "246":{n:"Finland",v:76,r:"Europe",note:"9th globally (Oxford: 76.48). Elements of AI programme; high population AI literacy."},
-      "372":{n:"Ireland",v:74,r:"Europe",note:"Major tech company HQs; growing AI research base. Strong Data & Infrastructure pillar."},
-      "616":{n:"Poland",v:62,r:"Europe",note:"Pledged €232m to develop domestic Polish large language model in 2024."},
-      "642":{n:"Romania",v:52,r:"Europe",note:"Released national AI strategy in 2024. Growing Eastern European tech hub."},
-      "380":{n:"Italy",v:67,r:"Europe",note:"Updated AI Strategy in 2024. EU AI Act participant; strong research, slower adoption."},
-      "620":{n:"Portugal",v:66,r:"Europe",note:"Growing Lisbon AI scene; Atlantic tech hub ambitions."},
-      "724":{n:"Spain",v:69,r:"Europe",note:"Created EU's first dedicated AI Agency (AESIA) in 2024. Strong national AI strategy."},
-      "643":{n:"Russia",v:50,r:"Europe/Asia",note:"Yandex AI active domestically; increasingly isolated from global AI governance and standards."},
-      "792":{n:"Turkey",v:48,r:"MENA",note:"Growing regional tech ambitions; AI policy developing. MENA crossover performer."},
-      "231":{n:"Ethiopia",v:18,r:"Africa",note:"Became second low-income country globally to release a national AI strategy in 2024."},
-      "180":{n:"DR Congo",v:10,r:"Africa",note:"Critical minerals mined here power global AI chips — yet the country has almost no AI readiness itself."},
-      "800":{n:"Uganda",v:16,r:"Africa",note:"Growing mobile tech; AI very limited. Young population offers potential with right investment."},
-      "012":{n:"Algeria",v:28,r:"Africa/MENA",note:"Oil wealth hasn't translated to an AI ecosystem. Limited AI governance framework."},
-      "504":{n:"Morocco",v:34,r:"Africa/MENA",note:"Tech hub ambitions; French tech ties help. Growing Casablanca digital sector."},
-      "144":{n:"Sri Lanka",v:26,r:"South Asia",note:"Formalised AI strategy in 2024. Economic crisis set back digital ambitions but momentum returning."},
-      "524":{n:"Nepal",v:14,r:"South Asia",note:"Very low AI readiness; mountainous geography and connectivity barriers compound challenges."},
-      "608":{n:"Philippines",v:38,r:"SE Asia",note:"BPO sector driving some AI adoption; ASEAN digital economy integration growing."},
-      "764":{n:"Thailand",v:42,r:"SE Asia",note:"ASEAN digital economy push; AI in tourism and manufacturing sectors."},
-      "600":{n:"Paraguay",v:22,r:"Latin America",note:"Limited AI infrastructure; significant digital divide. Mostly consumer of global AI tools."},
+    label: "AI Readiness Score",
+    desc: "Infrastructure, talent, and policy environment",
+    countries: {
+      "840":{n:"United States",v:92,r:"North America",note:"World's largest AI ecosystem; leads in research, investment, and model development."},
+      "826":{n:"United Kingdom",v:81,r:"Europe",note:"Strong AI research; hosts DeepMind and major policy debates."},
+      "276":{n:"Germany",v:74,r:"Europe",note:"Industrial AI strength; EU AI Act co-architect."},
+      "250":{n:"France",v:72,r:"Europe",note:"Mistral AI; strong state-backed AI strategy."},
+      "124":{n:"Canada",v:78,r:"North America",note:"Birthplace of deep learning; strong university research."},
+      "036":{n:"Australia",v:71,r:"Oceania",note:"Growing national AI strategy; strong digital infrastructure."},
+      "392":{n:"Japan",v:75,r:"Asia-Pacific",note:"Robotics leader; government-backed AI push."},
+      "156":{n:"China",v:87,r:"Asia-Pacific",note:"Second largest AI ecosystem; state-directed massive investment."},
+      "356":{n:"India",v:52,r:"South Asia",note:"Large tech talent pool but infrastructure gaps persist."},
+      "076":{n:"Brazil",v:38,r:"Latin America",note:"Largest LatAm economy; AI policy nascent."},
+      "566":{n:"Nigeria",v:21,r:"Africa",note:"Emerging tech hubs (Lagos) but severe infrastructure gaps."},
+      "404":{n:"Kenya",v:28,r:"Africa",note:"Regional fintech leader; AI adoption growing in key sectors."},
+      "710":{n:"South Africa",v:34,r:"Africa",note:"Most advanced AI ecosystem on the continent."},
+      "818":{n:"Egypt",v:27,r:"Africa/MENA",note:"Government AI strategy launched; limited implementation."},
+      "682":{n:"Saudi Arabia",v:58,r:"MENA",note:"Massive state investment; NEOM and AI centre initiatives."},
+      "586":{n:"Pakistan",v:18,r:"South Asia",note:"Young tech talent but policy vacuum and connectivity barriers."},
+      "050":{n:"Bangladesh",v:15,r:"South Asia",note:"Low AI readiness; digital infrastructure investment underway."},
+      "686":{n:"Senegal",v:16,r:"Africa",note:"Digital economy ambitions; early-stage AI adoption."},
+      "288":{n:"Ghana",v:22,r:"Africa",note:"Growing tech startup scene; AI policy emerging."},
+      "360":{n:"Indonesia",v:44,r:"SE Asia",note:"Large digital economy; AI adoption in fintech and e-commerce."},
+      "704":{n:"Vietnam",v:42,r:"SE Asia",note:"Tech manufacturing base; AI talent growing."},
+      "484":{n:"Mexico",v:41,r:"Latin America",note:"North American integration; AI adoption uneven."},
+      "170":{n:"Colombia",v:33,r:"Latin America",note:"Growing startup scene; AI governance discussions early-stage."},
+      "600":{n:"Paraguay",v:19,r:"Latin America",note:"Limited AI infrastructure; digital divide significant."},
+      "752":{n:"Sweden",v:83,r:"Europe",note:"High digital maturity; active AI ethics discourse."},
+      "528":{n:"Netherlands",v:80,r:"Europe",note:"EU AI hub; strong data economy."},
+      "372":{n:"Ireland",v:77,r:"Europe",note:"Tech company HQs; AI research growing."},
+      "616":{n:"Poland",v:58,r:"Europe",note:"Growing Eastern European tech hub."},
+      "792":{n:"Turkey",v:46,r:"MENA",note:"Regional tech ambitions; AI policy developing."},
+      "764":{n:"Thailand",v:40,r:"SE Asia",note:"Digital economy push; AI in tourism and manufacturing."},
+      "104":{n:"Myanmar",v:12,r:"SE Asia",note:"Very low AI readiness; political instability compounds gaps."},
+      "729":{n:"Sudan",v:9,r:"Africa",note:"Conflict and infrastructure collapse severely limit AI access."},
+      "180":{n:"DR Congo",v:8,r:"Africa",note:"Critical infrastructure deficits; AI highly inaccessible."},
+      "231":{n:"Ethiopia",v:14,r:"Africa",note:"Large population; government digital ambitions vs reality gap."},
+      "012":{n:"Algeria",v:25,r:"Africa/MENA",note:"Oil wealth hasn't translated to an AI ecosystem."},
+      "504":{n:"Morocco",v:31,r:"Africa/MENA",note:"Tech hub ambitions; French tech ties help."},
+      "800":{n:"Uganda",v:17,r:"Africa",note:"Young population; growing mobile tech but AI very limited."},
+      "458":{n:"Malaysia",v:55,r:"SE Asia",note:"National AI roadmap; strong regional digital infrastructure."},
+      "608":{n:"Philippines",v:36,r:"SE Asia",note:"BPO sector driving some AI adoption; infrastructure gaps remain."},
+      "620":{n:"Portugal",v:68,r:"Europe",note:"Atlantic tech hub; Lisbon AI scene growing."},
+      "724":{n:"Spain",v:70,r:"Europe",note:"National AI strategy; strong research base."},
+      "380":{n:"Italy",v:65,r:"Europe",note:"EU AI Act participant; research strong, adoption slower."},
+      "643":{n:"Russia",v:62,r:"Europe/Asia",note:"State AI ambitions; increasingly isolated from global ecosystem."},
+      "410":{n:"South Korea",v:79,r:"Asia-Pacific",note:"Strong semiconductor base; Samsung and LG AI push."},
+      "756":{n:"Switzerland",v:85,r:"Europe",note:"Research excellence; high-compute AI access."},
+      "578":{n:"Norway",v:80,r:"Europe",note:"Sovereign wealth AI investment; Nordic digital model."},
+      "246":{n:"Finland",v:82,r:"Europe",note:"Elements of AI programme; high digital literacy population."},
+      "144":{n:"Sri Lanka",v:24,r:"South Asia",note:"Economic crisis set back digital ambitions significantly."},
+      "524":{n:"Nepal",v:11,r:"South Asia",note:"Very low AI readiness; significant connectivity barriers."},
+      "032":{n:"Argentina",v:44,r:"Latin America",note:"Strong STEM education; economic instability limits AI growth."},
+      "152":{n:"Chile",v:50,r:"Latin America",note:"Most digitally advanced LatAm country; AI policy emerging."},
+      "604":{n:"Peru",v:30,r:"Latin America",note:"Growing tech sector; significant rural digital divide."},
     }
   },
   access: {
-    label:"AI Access Score",
-    desc:"Internet penetration, device access & AI tool availability",
-    source:"A4EAI composite: ITU 2024, Alliance for Affordable Internet, GSMA data",
-    countries:{
-      "840":{n:"United States",v:95,r:"North America",note:"Near-universal broadband. All major AI tools (ChatGPT, Gemini, Copilot, Claude) freely accessible."},
-      "826":{n:"United Kingdom",v:91,r:"Europe",note:"High broadband penetration. UK among top AI tool adoption markets globally."},
-      "276":{n:"Germany",v:88,r:"Europe",note:"Strong fibre infrastructure. AI tools widely adopted by businesses and government."},
-      "250":{n:"France",v:89,r:"Europe",note:"High internet access. Slight rural digital gap. Mistral and global tools both accessible."},
-      "124":{n:"Canada",v:92,r:"North America",note:"Very high connectivity. AI tools mainstream across sectors."},
-      "036":{n:"Australia",v:90,r:"Oceania",note:"High connectivity. Rural and remote gap — significant for Indigenous communities."},
-      "392":{n:"Japan",v:93,r:"Asia-Pacific",note:"Ultra-high broadband. AI deeply integrated in consumer electronics and public services."},
-      "702":{n:"Singapore",v:96,r:"Asia-Pacific",note:"World-class connectivity. AI tools and applications fully mainstream."},
-      "410":{n:"South Korea",v:97,r:"Asia-Pacific",note:"World's fastest average internet speeds. AI integrated into everyday life via Kakao, Naver, Samsung."},
-      "156":{n:"China",v:73,r:"Asia-Pacific",note:"High connectivity but global tools (ChatGPT, Claude) blocked. Domestic tools (Ernie, Kimi) serve the market."},
-      "356":{n:"India",v:46,r:"South Asia",note:"Cheap mobile data (JIO) but 600m+ still offline. Major language barriers for non-English AI tools."},
-      "076":{n:"Brazil",v:69,r:"Latin America",note:"Growing urban connectivity. Significant rural digital divide. Portuguese language support improving."},
-      "152":{n:"Chile",v:72,r:"Latin America",note:"Highest internet penetration in LatAm. AI tools increasingly accessible in urban areas."},
-      "858":{n:"Uruguay",v:70,r:"Latin America",note:"Strong connectivity relative to region. National broadband plan driving rural access."},
-      "566":{n:"Nigeria",v:28,r:"Africa",note:"Mobile-first access; electricity and data costs are major barriers. 4G coverage limited outside cities."},
-      "404":{n:"Kenya",v:36,r:"Africa",note:"M-Pesa digital economy; Nairobi tech hub. Mobile broadband expanding but AI tools costly."},
-      "710":{n:"South Africa",v:49,r:"Africa",note:"Highest connectivity in Africa; data costs remain among world's most expensive per GB."},
-      "818":{n:"Egypt",v:54,r:"Africa/MENA",note:"Growing internet access. AI tool awareness low; Arabic language AI tools underrepresented."},
-      "784":{n:"UAE",v:96,r:"MENA",note:"Ultra-high smartphone penetration and 5G coverage. AI tools fully accessible and widely adopted."},
-      "682":{n:"Saudi Arabia",v:88,r:"MENA",note:"Very high smartphone penetration. AI consumer adoption growing rapidly."},
-      "376":{n:"Israel",v:90,r:"MENA",note:"High connectivity. Strong AI tool adoption among tech-savvy population."},
-      "586":{n:"Pakistan",v:25,r:"South Asia",note:"Mobile internet expanding but AI tools largely inaccessible due to cost and language barriers."},
-      "050":{n:"Bangladesh",v:28,r:"South Asia",note:"Mobile access growing. AI tools almost entirely inaccessible; no Bengali-language AI tools at scale."},
-      "686":{n:"Senegal",v:20,r:"Africa",note:"Mobile money leader (Wave, Orange Money). AI access very limited; Wolof/French AI almost absent."},
-      "646":{n:"Rwanda",v:22,r:"Africa",note:"Government-backed broadband expansion. AI access low but digital literacy programmes active."},
-      "288":{n:"Ghana",v:26,r:"Africa",note:"Growing mobile penetration. AI largely unavailable; Akan/Twi language AI essentially nonexistent."},
-      "360":{n:"Indonesia",v:59,r:"SE Asia",note:"Large mobile user base. Gojek and Tokopedia integrate AI. Bahasa Indonesia AI tools improving."},
-      "704":{n:"Vietnam",v:57,r:"SE Asia",note:"High mobile penetration. AI tools accessible in cities; Vietnamese language support improving."},
-      "458":{n:"Malaysia",v:72,r:"SE Asia",note:"Strong regional connectivity. AI tools widely accessible; Malay-language AI models growing."},
-      "484":{n:"Mexico",v:62,r:"Latin America",note:"Growing connectivity. Rural digital divide significant. Spanish-language AI tools widely available."},
-      "170":{n:"Colombia",v:54,r:"Latin America",note:"Urban AI access decent. Rural areas have very limited connectivity and AI tool access."},
-      "032":{n:"Argentina",v:71,r:"Latin America",note:"High urban connectivity. AI tools accessible in cities; economic crisis impacts data plan affordability."},
-      "604":{n:"Peru",v:42,r:"Latin America",note:"Growing mobile access. Highland digital divide significant. Quechua-language AI essentially absent."},
-      "752":{n:"Sweden",v:96,r:"Europe",note:"Among world's highest connectivity. AI tools fully accessible; digital literacy exceptionally high."},
-      "528":{n:"Netherlands",v:96,r:"Europe",note:"Fibre broadband standard. AI tools mainstream across all demographic groups."},
-      "246":{n:"Finland",v:95,r:"Europe",note:"Near-universal connectivity. World's highest digital literacy rates."},
-      "372":{n:"Ireland",v:90,r:"Europe",note:"High broadband penetration. AI tools widely used; tech company hub boosts adoption."},
-      "616":{n:"Poland",v:74,r:"Europe",note:"Growing connectivity. AI tools increasingly accessible; Polish language support strong."},
-      "642":{n:"Romania",v:68,r:"Europe",note:"Fast improving connectivity. Rural-urban digital divide persists but narrowing."},
-      "380":{n:"Italy",v:78,r:"Europe",note:"Good connectivity overall. Digital divide between north and south remains."},
-      "620":{n:"Portugal",v:80,r:"Europe",note:"High connectivity. AI tools widely accessible; Atlantic hub attracting tech talent."},
-      "724":{n:"Spain",v:83,r:"Europe",note:"Strong broadband infrastructure. Spanish-language AI tools benefit large population."},
-      "643":{n:"Russia",v:62,r:"Europe/Asia",note:"High internet access but global AI tools increasingly restricted; Yandex AI fills domestic gap."},
-      "792":{n:"Turkey",v:68,r:"MENA",note:"High mobile usage. Some AI tools restricted. Turkish language support in global tools limited."},
-      "231":{n:"Ethiopia",v:17,r:"Africa",note:"Telebirr mobile money growing. AI access extremely limited; Amharic language AI absent."},
-      "180":{n:"DR Congo",v:9,r:"Africa",note:"Among world's lowest connectivity. AI essentially inaccessible to the vast majority."},
-      "800":{n:"Uganda",v:19,r:"Africa",note:"Mobile access growing. AI very limited; local language AI absent."},
-      "144":{n:"Sri Lanka",v:32,r:"South Asia",note:"Economic crisis reduced connectivity. Sinhala/Tamil language AI essentially nonexistent."},
-      "524":{n:"Nepal",v:18,r:"South Asia",note:"Very low access. Mountainous terrain compounds barriers. Nepali language AI absent."},
-      "608":{n:"Philippines",v:55,r:"SE Asia",note:"Growing mobile use. BPO sector has strong AI tool access. Rural coverage patchy."},
-      "764":{n:"Thailand",v:67,r:"SE Asia",note:"High mobile penetration. AI tools accessible in Bangkok; Thai language support improving."},
-      "600":{n:"Paraguay",v:34,r:"Latin America",note:"Limited connectivity. AI inaccessible to most of population outside Asunción."},
+    label: "AI Access Score",
+    desc: "Internet penetration, devices, AI tool availability",
+    countries: {
+      "840":{n:"United States",v:95,r:"North America",note:"Near-universal broadband; leading AI tools freely accessible."},
+      "826":{n:"United Kingdom",v:90,r:"Europe",note:"High broadband penetration; AI tools widely used."},
+      "276":{n:"Germany",v:87,r:"Europe",note:"Strong infrastructure; AI tools widely accessible."},
+      "250":{n:"France",v:88,r:"Europe",note:"High internet access; digital inclusion gaps in rural areas."},
+      "124":{n:"Canada",v:91,r:"North America",note:"Very high connectivity; AI tools mainstream."},
+      "036":{n:"Australia",v:89,r:"Oceania",note:"High connectivity; rural gaps persist."},
+      "392":{n:"Japan",v:92,r:"Asia-Pacific",note:"Ultra-high broadband; AI integrated in consumer products."},
+      "156":{n:"China",v:72,r:"Asia-Pacific",note:"High access but global tools blocked; domestic ecosystem."},
+      "356":{n:"India",v:45,r:"South Asia",note:"Cheap mobile data but 600M+ still offline; language barriers."},
+      "076":{n:"Brazil",v:68,r:"Latin America",note:"Growing connectivity; significant rural digital divide."},
+      "566":{n:"Nigeria",v:28,r:"Africa",note:"Mobile-first access; cost and electricity are major barriers."},
+      "404":{n:"Kenya",v:35,r:"Africa",note:"M-Pesa digital economy; mobile broadband expanding."},
+      "710":{n:"South Africa",v:48,r:"Africa",note:"Highest connectivity in Africa; data costs still high."},
+      "818":{n:"Egypt",v:52,r:"Africa/MENA",note:"Growing internet access; AI tool awareness remains low."},
+      "682":{n:"Saudi Arabia",v:82,r:"MENA",note:"Very high smartphone penetration; AI consumer use growing."},
+      "586":{n:"Pakistan",v:22,r:"South Asia",note:"Mobile internet expanding but AI tools largely inaccessible."},
+      "050":{n:"Bangladesh",v:25,r:"South Asia",note:"Mobile access growing; AI tools very limited in local languages."},
+      "686":{n:"Senegal",v:18,r:"Africa",note:"Mobile money leader; AI access very limited."},
+      "288":{n:"Ghana",v:24,r:"Africa",note:"Growing mobile penetration; AI largely unavailable."},
+      "360":{n:"Indonesia",v:58,r:"SE Asia",note:"Large mobile user base; Gojek/Tokopedia AI integration."},
+      "704":{n:"Vietnam",v:55,r:"SE Asia",note:"High mobile penetration; AI tools accessible in cities."},
+      "484":{n:"Mexico",v:60,r:"Latin America",note:"Growing connectivity; rural digital divide significant."},
+      "170":{n:"Colombia",v:52,r:"Latin America",note:"Urban AI access decent; rural access very limited."},
+      "752":{n:"Sweden",v:95,r:"Europe",note:"Highest global connectivity; AI tools fully accessible."},
+      "528":{n:"Netherlands",v:95,r:"Europe",note:"Fibre broadband standard; AI tools mainstream."},
+      "410":{n:"South Korea",v:96,r:"Asia-Pacific",note:"World's fastest internet; AI deeply integrated in daily life."},
+      "643":{n:"Russia",v:60,r:"Europe/Asia",note:"High internet access; global AI tools increasingly restricted."},
+      "792":{n:"Turkey",v:66,r:"MENA",note:"High mobile usage; some AI tools restricted."},
+      "144":{n:"Sri Lanka",v:30,r:"South Asia",note:"Economic crisis reduced connectivity; AI very limited."},
+      "524":{n:"Nepal",v:15,r:"South Asia",note:"Very low access; mountainous terrain compounds barriers."},
+      "180":{n:"DR Congo",v:8,r:"Africa",note:"Among lowest connectivity globally; AI essentially inaccessible."},
+      "231":{n:"Ethiopia",v:15,r:"Africa",note:"Telebirr mobile money growing; AI access extremely limited."},
+      "032":{n:"Argentina",v:70,r:"Latin America",note:"High urban connectivity; AI tools accessible in cities."},
+      "604":{n:"Peru",v:40,r:"Latin America",note:"Growing mobile access; significant highland digital divide."},
     }
   },
   governance: {
-    label:"AI Governance Score",
-    desc:"National strategies, regulation, ethics frameworks & civil society voice",
-    source:"A4EAI composite: Oxford GARI governance pillar, OECD AI Policy Observatory, UNESCO RAM",
-    countries:{
-      "840":{n:"United States",v:72,r:"North America",note:"Executive orders and White House NSM on AI (2024). Industry self-governance dominant; no comprehensive federal AI law yet."},
-      "826":{n:"United Kingdom",v:80,r:"Europe",note:"AI Safety Institute operational. Bletchley and Seoul Declarations. Pro-innovation regulatory stance with Matt Clifford AI Action Plan."},
-      "276":{n:"Germany",v:84,r:"Europe",note:"EU AI Act champion. GDPR culture embedded. Weimar Triangle AI investment alliance with France and Poland."},
-      "250":{n:"France",v:81,r:"Europe",note:"EU AI Act contributor. First Secretary of State for AI appointed in 2024. CNIL data regulation active."},
-      "124":{n:"Canada",v:78,r:"North America",note:"Canadian AI Safety Institute launched November 2024. Bill C-27 AI provisions in progress."},
-      "036":{n:"Australia",v:72,r:"Oceania",note:"Voluntary AI Ethics Framework. Mandatory guardrails under active development. Indo-Pacific governance voice."},
-      "392":{n:"Japan",v:74,r:"Asia-Pacific",note:"AI Safety Institute launched post-Seoul Summit. Hiroshima AI Process contributing to global standards."},
-      "702":{n:"Singapore",v:85,r:"Asia-Pacific",note:"Global leader in Government pillar (Oxford: 90.96). Model AI governance framework widely cited globally."},
-      "410":{n:"South Korea",v:76,r:"Asia-Pacific",note:"Hosted 2024 Seoul AI Safety Summit. National AI Safety Institute operational. AI promotion and governance laws coexist."},
-      "156":{n:"China",v:64,r:"Asia-Pacific",note:"Active AI governance: Generative AI regulations (2023), algorithm transparency rules. State-directed; civil society excluded."},
-      "356":{n:"India",v:44,r:"South Asia",note:"Digital India AI strategy active. IndiaAI Mission launched 2024. Regulation lags behind adoption pace."},
-      "076":{n:"Brazil",v:58,r:"Latin America",note:"Comprehensive AI Bill advancing in Congress. Montevideo Declaration signatory. Civil society very active."},
-      "152":{n:"Chile",v:65,r:"Latin America",note:"Strong Governance & Ethics score (Oxford: 83.84). Updated AI strategy 2024. 2030 Digital Government Strategy underway."},
-      "858":{n:"Uruguay",v:66,r:"Latin America",note:"Vision score: 100. Co-authored Montevideo Declaration. AGESIC AI ethics leadership in region."},
-      "566":{n:"Nigeria",v:28,r:"Africa",note:"National AI Strategy released 2024. AI Scaling Hub launched 2025. Implementation capacity remains limited."},
-      "404":{n:"Kenya",v:34,r:"Africa",note:"AI policy white paper published. Civil society voices (iHub, Mozilla Africa) active in shaping governance."},
-      "710":{n:"South Africa",v:42,r:"Africa",note:"Presidential AI Commission most advanced governance structure on continent. AU Continental AI Strategy supporter."},
-      "818":{n:"Egypt",v:24,r:"Africa/MENA",note:"National AI Strategy exists. NTRA regulatory body. Limited civil society input in governance design."},
-      "784":{n:"UAE",v:68,r:"MENA",note:"Dedicated Minister of AI since 2017. Comprehensive AI strategy. GITEX platform for global AI governance dialogue."},
-      "682":{n:"Saudi Arabia",v:58,r:"MENA",note:"SDAIA authority operational. Mauritania AI strategy released 2024. Civil society voice limited."},
-      "376":{n:"Israel",v:64,r:"MENA",note:"First national AI strategy released 2024. Strong innovation governance; democracy accountability concerns raised."},
-      "586":{n:"Pakistan",v:18,r:"South Asia",note:"National AI Policy exists on paper. IGNITE leading implementation. Civil society engagement minimal; enforcement absent."},
-      "050":{n:"Bangladesh",v:14,r:"South Asia",note:"Digital Bangladesh policy. AI governance nearly absent. No independent AI oversight body."},
-      "686":{n:"Senegal",v:20,r:"Africa",note:"National AI strategy released with AU/Team Europe support. Emerging governance; civil society beginning to engage."},
-      "646":{n:"Rwanda",v:26,r:"Africa",note:"National AI Strategy (2023) with GIZ FAIR Forward support. Africa pioneer. Implementation framework developing."},
-      "288":{n:"Ghana",v:24,r:"Africa",note:"National AI Policy released 2024. Early implementation. Civil society (Accra tech hub) growing in voice."},
-      "360":{n:"Indonesia",v:42,r:"SE Asia",note:"National AI Strategy operational. ASEAN AI governance engagement. Regulatory framework still developing."},
-      "704":{n:"Vietnam",v:34,r:"SE Asia",note:"National AI strategy issued. Governance framework limited; civil society voice restricted."},
-      "458":{n:"Malaysia",v:58,r:"SE Asia",note:"Malaysia AI Roadmap well-structured. ASEAN cooperation strong. Governance framework maturing."},
-      "484":{n:"Mexico",v:36,r:"Latin America",note:"New Agency for Digital Transformation (ATDT) created 2024. Montevideo Declaration signatory. No national AI law yet."},
-      "170":{n:"Colombia",v:40,r:"Latin America",note:"AI ethics guidelines published. Congress debate ongoing. Civil society active; Montevideo Declaration signatory."},
-      "032":{n:"Argentina",v:46,r:"Latin America",note:"AI governance discussions advanced. Civil society engaged. Latam-GPT participant. No national AI law yet."},
-      "604":{n:"Peru",v:26,r:"Latin America",note:"Early-stage AI policy. Limited civil society voice in governance. Montevideo Declaration observer."},
-      "752":{n:"Sweden",v:88,r:"Europe",note:"Nordic rights-based AI governance model. Transparent algorithmic accountability culture."},
-      "528":{n:"Netherlands",v:87,r:"Europe",note:"EU AI Act leader. Published national Generative AI vision 2024. Public Sector AI Registry discussions."},
-      "246":{n:"Finland",v:86,r:"Europe",note:"EU AI Act contributor. Elements of AI programme — population-wide AI ethics education."},
-      "372":{n:"Ireland",v:76,r:"Europe",note:"EU AI Act implementation. Data Protection Commission active. Tech company governance hub."},
-      "616":{n:"Poland",v:65,r:"Europe",note:"National AI strategy active. €232m domestic model investment. Weimar Triangle AI alliance member."},
-      "642":{n:"Romania",v:54,r:"Europe",note:"National AI strategy released 2024. Focus on economic competitiveness and ethical deployment."},
-      "380":{n:"Italy",v:70,r:"Europe",note:"EU AI Act participant. Updated AI strategy 2024. Strong research; adoption and enforcement slower."},
-      "620":{n:"Portugal",v:68,r:"Europe",note:"EU AI Act participant. Growing AI governance capacity. Atlantic hub positioning."},
-      "724":{n:"Spain",v:76,r:"Europe",note:"Created EU's first AI supervision agency (AESIA) in 2024. Strong governance commitment."},
-      "643":{n:"Russia",v:34,r:"Europe/Asia",note:"State AI governance; civil society excluded. Isolated from global governance frameworks post-2022."},
-      "792":{n:"Turkey",v:44,r:"MENA",note:"AI strategy developing. Council of Europe observer; signed some international AI frameworks."},
-      "231":{n:"Ethiopia",v:16,r:"Africa",note:"Second low-income country to release national AI strategy (2024). Implementation at very early stage."},
-      "180":{n:"DR Congo",v:6,r:"Africa",note:"No AI governance framework. Conflict context severely limits institutional capacity."},
-      "800":{n:"Uganda",v:18,r:"Africa",note:"Limited AI governance. Young civil society beginning to raise AI rights questions."},
-      "144":{n:"Sri Lanka",v:28,r:"South Asia",note:"Formalised AI strategy 2024. Economic crisis recovery underway. Governance framework early-stage."},
-      "524":{n:"Nepal",v:12,r:"South Asia",note:"No AI governance framework. Digital connectivity itself remains a priority over AI policy."},
-      "608":{n:"Philippines",v:40,r:"SE Asia",note:"AI governance emerging. DICT leading policy work. ASEAN AI governance engagement growing."},
-      "764":{n:"Thailand",v:44,r:"SE Asia",note:"National AI strategy active. ASEAN governance engagement. Civil society voice limited."},
-      "600":{n:"Paraguay",v:22,r:"Latin America",note:"Minimal AI governance. Digital divide focus takes priority over AI-specific policy."},
+    label: "AI Governance Score",
+    desc: "National strategies, regulation, civil society voice",
+    countries: {
+      "840":{n:"United States",v:68,r:"North America",note:"Executive orders and emerging regulation; tech industry self-governance dominant."},
+      "826":{n:"United Kingdom",v:78,r:"Europe",note:"Pro-innovation AI Safety Institute; Bletchley Park summit host."},
+      "276":{n:"Germany",v:82,r:"Europe",note:"EU AI Act advocate; strong data protection culture (GDPR)."},
+      "250":{n:"France",v:79,r:"Europe",note:"EU AI Act contributor; CNIL data regulation active."},
+      "124":{n:"Canada",v:74,r:"North America",note:"Voluntary AI Code of Conduct; national AI law in progress."},
+      "036":{n:"Australia",v:70,r:"Oceania",note:"Voluntary AI Ethics Framework; mandatory guardrails developing."},
+      "392":{n:"Japan",v:72,r:"Asia-Pacific",note:"AI guidelines issued; international governance engagement."},
+      "156":{n:"China",v:65,r:"Asia-Pacific",note:"State-directed AI governance; generative AI regulations active."},
+      "356":{n:"India",v:40,r:"South Asia",note:"Digital India AI strategy; regulation lagging behind adoption."},
+      "076":{n:"Brazil",v:35,r:"Latin America",note:"AI Bill in Congress; civil society active but law not yet passed."},
+      "566":{n:"Nigeria",v:22,r:"Africa",note:"National AI Strategy 2022; implementation very limited."},
+      "404":{n:"Kenya",v:30,r:"Africa",note:"AI policy white paper; civil society voices active."},
+      "710":{n:"South Africa",v:38,r:"Africa",note:"Presidential AI Commission; most advanced governance in Africa."},
+      "818":{n:"Egypt",v:20,r:"Africa/MENA",note:"National AI Strategy exists; limited civil society input."},
+      "682":{n:"Saudi Arabia",v:45,r:"MENA",note:"SDAIA AI authority; governance top-down, limited civil society."},
+      "586":{n:"Pakistan",v:14,r:"South Asia",note:"National AI Policy exists; little implementation or civil society engagement."},
+      "050":{n:"Bangladesh",v:12,r:"South Asia",note:"Digital Bangladesh policy; AI governance nearly absent."},
+      "686":{n:"Senegal",v:15,r:"Africa",note:"Emerging digital policy; AI governance very nascent."},
+      "288":{n:"Ghana",v:20,r:"Africa",note:"National AI Policy 2023; early implementation stage."},
+      "360":{n:"Indonesia",v:38,r:"SE Asia",note:"National AI Strategy; ASEAN AI governance engagement."},
+      "704":{n:"Vietnam",v:30,r:"SE Asia",note:"AI strategy issued; governance framework limited."},
+      "484":{n:"Mexico",v:32,r:"Latin America",note:"AI governance discussions active; no national law yet."},
+      "170":{n:"Colombia",v:35,r:"Latin America",note:"AI ethics guidelines exist; Congress debate ongoing."},
+      "752":{n:"Sweden",v:88,r:"Europe",note:"Nordic AI governance model; transparent, rights-based approach."},
+      "528":{n:"Netherlands",v:86,r:"Europe",note:"EU AI Act leader; strong algorithmic accountability."},
+      "410":{n:"South Korea",v:70,r:"Asia-Pacific",note:"AI promotion and governance laws coexist."},
+      "643":{n:"Russia",v:30,r:"Europe/Asia",note:"State AI governance; civil society excluded."},
+      "180":{n:"DR Congo",v:5,r:"Africa",note:"No AI governance framework; conflict context."},
+      "231":{n:"Ethiopia",v:12,r:"Africa",note:"Nascent digital policy; AI governance absent."},
+      "032":{n:"Argentina",v:42,r:"Latin America",note:"AI governance discussions active; civil society voices present."},
+      "604":{n:"Peru",v:22,r:"Latin America",note:"Early-stage AI policy; limited civil society engagement."},
     }
   },
   cocreator: {
-    label:"Co-creator Index",
-    desc:"Producing vs. consuming AI — research output, model creation, standards voice",
-    source:"A4EAI composite: CSET AI research data, Stanford HAI Index 2024, OECD AI observatory",
-    countries:{
-      "840":{n:"United States",v:98,r:"North America",note:"Dominant AI creator. 40 major AI models produced in 2024 alone. Private AI investment: $109.1bn — 12× China, 24× UK."},
-      "826":{n:"United Kingdom",v:82,r:"Europe",note:"DeepMind (Gemini), Stability AI, Wayve. Major global AI research output. Bletchley standards-setting voice."},
-      "276":{n:"Germany",v:70,r:"Europe",note:"Aleph Alpha (sovereign AI model). Strong EU-level research. Weimar Triangle co-creator alignment."},
-      "250":{n:"France",v:76,r:"Europe",note:"Mistral AI — Europe's leading open-weight model creator. INRIA research excellence. EU AI Act standard-setter."},
-      "124":{n:"Canada",v:80,r:"North America",note:"Cohere (enterprise AI), Vector Institute. Co-inventors of the transformer architecture (Bengio lab)."},
-      "036":{n:"Australia",v:58,r:"Oceania",note:"Growing research output. Canva AI, Atlassian AI. Indo-Pacific standards voice."},
-      "392":{n:"Japan",v:66,r:"Asia-Pacific",note:"Toyota, Sony AI, SoftBank robotics. Strong applied AI. Hiroshima AI Process — standards co-creator."},
-      "702":{n:"Singapore",v:72,r:"Asia-Pacific",note:"Sea AI Lab, DSO. Strong regional AI research hub. AI governance standards leadership."},
-      "410":{n:"South Korea",v:74,r:"Asia-Pacific",note:"Samsung Gauss, Kakao, LG AI Research, Naver HyperCLOVA. Semiconductor dominance (TSMC rival)."},
-      "156":{n:"China",v:86,r:"Asia-Pacific",note:"3rd largest producer behind only the US: 15 major AI models in 2024. DeepSeek, Qwen, Baidu Ernie. AI research output now matches US+UK+EU combined."},
-      "356":{n:"India",v:40,r:"South Asia",note:"Sarvam AI, Krutrim. Massive global AI talent — but much is exported. IndiaAI Mission aims to retain and build domestically."},
-      "076":{n:"Brazil",v:20,r:"Latin America",note:"Latam-GPT initiative co-founder. Research growing. Mostly consumer of global AI platforms currently."},
-      "152":{n:"Chile",v:18,r:"Latin America",note:"Growing tech sector. NLP research in Spanish. Mostly consumer; AI creation nascent."},
-      "858":{n:"Uruguay",v:16,r:"Latin America",note:"Small but active AI research community. Montevideo Declaration — governance co-creator. Mostly consumer."},
-      "566":{n:"Nigeria",v:9,r:"Africa",note:"African AI talent largely in diaspora. Consumer of Western AI. AI Scaling Hub (2025) aims to change this."},
-      "404":{n:"Kenya",v:13,r:"Africa",note:"iHub, Nairobi tech scene. African AI voice growing — but actual model creation very limited."},
-      "710":{n:"South Africa",v:20,r:"Africa",note:"Lelapa AI (indigenous language models), Africa's most active AI research. AU AI Strategy contributor."},
-      "818":{n:"Egypt",v:12,r:"Africa/MENA",note:"Limited research output. Mostly consumer of global AI. Arabic NLP is an area of growing regional interest."},
-      "784":{n:"UAE",v:54,r:"MENA",note:"G42, TII (Falcon LLM — open-weight Arabic model). Significant AI creation ambitions and investment."},
-      "682":{n:"Saudi Arabia",v:38,r:"MENA",note:"HUMAIN full-stack AI ecosystem launched 2025. Google Cloud Arabic language model partnership. State-funded creation at scale."},
-      "376":{n:"Israel",v:48,r:"MENA",note:"Strong AI deep tech — AI21 Labs, Mobileye. High research output per capita. Defence AI controversial globally."},
-      "586":{n:"Pakistan",v:8,r:"South Asia",note:"Tech talent largely serves US/UK companies remotely. Minimal domestic AI creation. Arbisoft, Systems Ltd doing AI work."},
-      "050":{n:"Bangladesh",v:6,r:"South Asia",note:"IT export economy (garment sector parallel). AI creation essentially absent. Talent serves global firms."},
-      "686":{n:"Senegal",v:7,r:"Africa",note:"Minimal AI creation. Diaspora in Paris and Brussels important. Wolof language NLP emerging in academic circles."},
-      "646":{n:"Rwanda",v:9,r:"Africa",note:"Small active AI community. Kigali as pan-African AI hub ambition. Mostly consuming and adapting tools."},
-      "288":{n:"Ghana",v:10,r:"Africa",note:"AI Ghana community active. GhanaNLP working on Akan language models — a rare Global South creation effort."},
-      "360":{n:"Indonesia",v:30,r:"SE Asia",note:"GoTo AI, Tokopedia, Traveloka AI. Bahasa Indonesia models emerging. Growing domestic AI creation."},
-      "704":{n:"Vietnam",v:24,r:"SE Asia",note:"FPT AI, VinAI (serious research output). NVIDIA R&D centre arriving. Growing creator role."},
-      "458":{n:"Malaysia",v:36,r:"SE Asia",note:"Mesolitica Bahasa Malaysia models. AI research growing. ASEAN AI creation voice strengthening."},
-      "484":{n:"Mexico",v:22,r:"Latin America",note:"Nearshoring driving AI adoption. Some research. Latam-GPT co-participant. Mostly consumer currently."},
-      "170":{n:"Colombia",v:18,r:"Latin America",note:"Growing tech startup scene. Mostly consumer of global AI. Some NLP research in Spanish."},
-      "032":{n:"Argentina",v:24,r:"Latin America",note:"Mercado Libre AI (MeLi), serious applied AI. Strong research tradition. Latam-GPT participant."},
-      "604":{n:"Peru",v:12,r:"Latin America",note:"Very limited AI creation. Mostly consumer. Quechua language AI essentially nonexistent."},
-      "752":{n:"Sweden",v:79,r:"Europe",note:"Spotify AI, Klarna, Ericsson AI. Strong research. Active global AI governance voice."},
-      "528":{n:"Netherlands",v:76,r:"Europe",note:"ASML (world's only EUV chip machine maker). Booking.com AI. EU AI Act standard-setter."},
-      "246":{n:"Finland",v:74,r:"Europe",note:"Nokia AI, F-Secure, Reaktor. Elements of AI — global influence on AI literacy. Strong research."},
-      "372":{n:"Ireland",v:62,r:"Europe",note:"ICON, Accenture AI hub. Research growing. Tech company presence boosts ecosystem."},
-      "616":{n:"Poland",v:54,r:"Europe",note:"Domestic LLM investment. CD Projekt (game AI). Growing Eastern European AI creator role."},
-      "642":{n:"Romania",v:38,r:"Europe",note:"Strong developer talent. IT outsourcing base; AI creation growing. UiPath (RPA/AI) globally significant."},
-      "380":{n:"Italy",v:58,r:"Europe",note:"Generali, Enel AI. Strong research. EU AI Act contributor. Creation lagging adoption."},
-      "620":{n:"Portugal",v:56,r:"Europe",note:"Unbabel (AI translation). Growing Lisbon AI scene. Atlantic positioning for Brazil/Africa connections."},
-      "724":{n:"Spain",v:62,r:"Europe",note:"Indra, Telefonica AI. AESIA AI agency. Growing creator role in Spanish-language AI."},
-      "643":{n:"Russia",v:42,r:"Europe/Asia",note:"Yandex AI (significant). Sber AI. Isolated from global collaboration but active domestically."},
-      "792":{n:"Turkey",v:32,r:"MENA",note:"Growing tech sector. Getir, Trendyol AI. Mostly consumer of global AI frameworks."},
-      "231":{n:"Ethiopia",v:5,r:"Africa",note:"Pure consumer. AI strategy ambition exists. Amharic language AI almost entirely absent."},
-      "180":{n:"DR Congo",v:3,r:"Africa",note:"Pure consumer. Critical minerals here — cobalt, coltan — power global AI hardware. No AI creation."},
-      "800":{n:"Uganda",v:6,r:"Africa",note:"Growing mobile tech community. AI creation essentially absent. Consuming Western AI tools."},
-      "144":{n:"Sri Lanka",v:16,r:"South Asia",note:"Tech outsourcing sector. Some AI work via startups. Mostly consumer. Sinhala language AI absent."},
-      "524":{n:"Nepal",v:7,r:"South Asia",note:"Minimal AI presence. Mostly consumer of Indian and Western AI tools."},
-      "608":{n:"Philippines",v:22,r:"SE Asia",note:"BPO sector has AI integration. Some AI startups. Mostly consumer; Filipino language AI growing."},
-      "764":{n:"Thailand",v:28,r:"SE Asia",note:"SCB, KBTG bank AI. TRUE AI. Growing domestic creation. Thai language models improving."},
-      "600":{n:"Paraguay",v:5,r:"Latin America",note:"Entirely consumer. Minimal AI presence beyond tech adoption in business sector."},
+    label: "Co-creator Index",
+    desc: "Producing vs. consuming AI — research, models, standards",
+    countries: {
+      "840":{n:"United States",v:98,r:"North America",note:"Dominant AI creator: OpenAI, Google DeepMind, Anthropic, Meta AI all headquartered here."},
+      "826":{n:"United Kingdom",v:82,r:"Europe",note:"DeepMind, Stability AI; major global AI research output."},
+      "276":{n:"Germany",v:70,r:"Europe",note:"Aleph Alpha; strong research; EU AI standard-setter."},
+      "250":{n:"France",v:74,r:"Europe",note:"Mistral AI; INRIA research; active in global AI standards."},
+      "124":{n:"Canada",v:80,r:"North America",note:"Cohere; Vector Institute; co-inventor of the transformer architecture."},
+      "036":{n:"Australia",v:58,r:"Oceania",note:"Growing AI research; policy voice in the Indo-Pacific."},
+      "392":{n:"Japan",v:65,r:"Asia-Pacific",note:"Toyota, Sony AI; robotics AI leadership."},
+      "156":{n:"China",v:85,r:"Asia-Pacific",note:"Baidu, Alibaba, Huawei; massive research output; separate ecosystem."},
+      "356":{n:"India",v:38,r:"South Asia",note:"AI talent largely exported; domestic model development nascent (Sarvam AI)."},
+      "076":{n:"Brazil",v:18,r:"Latin America",note:"Research growing; mostly a consumer of global AI platforms."},
+      "566":{n:"Nigeria",v:8,r:"Africa",note:"African AI talent largely in diaspora; consumer of Western AI tools."},
+      "404":{n:"Kenya",v:12,r:"Africa",note:"iHub innovation; African AI voice growing but co-creation limited."},
+      "710":{n:"South Africa",v:18,r:"Africa",note:"Most active African AI research; Lelapa AI is a notable example."},
+      "818":{n:"Egypt",v:10,r:"Africa/MENA",note:"Limited research output; mostly consumer role."},
+      "682":{n:"Saudi Arabia",v:30,r:"MENA",note:"Investing heavily in AI creation; SDAIA and NEOM AI initiatives."},
+      "586":{n:"Pakistan",v:7,r:"South Asia",note:"Tech talent largely serves Western companies; minimal domestic creation."},
+      "050":{n:"Bangladesh",v:5,r:"South Asia",note:"IT export economy; AI creation essentially absent."},
+      "686":{n:"Senegal",v:6,r:"Africa",note:"Minimal AI creation; diaspora talent important."},
+      "288":{n:"Ghana",v:9,r:"Africa",note:"AI Ghana growing; mostly consumer role."},
+      "360":{n:"Indonesia",v:28,r:"SE Asia",note:"Gojek, Tokopedia AI; growing domestic AI development."},
+      "704":{n:"Vietnam",v:22,r:"SE Asia",note:"FPT AI; growing tech creation but still mostly consumer."},
+      "484":{n:"Mexico",v:20,r:"Latin America",note:"Nearshoring driving AI adoption; domestic creation limited."},
+      "170":{n:"Colombia",v:16,r:"Latin America",note:"Tech talent emerging; mostly consumer of global AI."},
+      "600":{n:"Paraguay",v:4,r:"Latin America",note:"Minimal AI presence; entirely consumer."},
+      "752":{n:"Sweden",v:78,r:"Europe",note:"Spotify AI; Klarna AI; strong research; active global voice."},
+      "528":{n:"Netherlands",v:75,r:"Europe",note:"ASML (chips); Booking.com AI; EU AI standard-setter."},
+      "410":{n:"South Korea",v:72,r:"Asia-Pacific",note:"Samsung, LG, Kakao AI; semiconductor dominance."},
+      "643":{n:"Russia",v:40,r:"Europe/Asia",note:"Yandex AI; isolated from global AI governance."},
+      "180":{n:"DR Congo",v:2,r:"Africa",note:"Pure consumer; critical minerals mined here power others' AI chips."},
+      "231":{n:"Ethiopia",v:4,r:"Africa",note:"Consumer role; digital economy ambitions largely unfulfilled."},
+      "032":{n:"Argentina",v:22,r:"Latin America",note:"Mercado Libre AI; growing; economic instability limits scale."},
+      "604":{n:"Peru",v:10,r:"Latin America",note:"Limited AI creation; mostly consumer."},
     }
   }
 };
 
-function scoreColor(v){
-  if(v===undefined) return 'var(--no-data)';
-  if(v<20) return '#7f1d1d';
-  if(v<35) return '#b91c1c';
-  if(v<50) return '#d97706';
-  if(v<65) return '#0284c7';
-  if(v<80) return '#0369a1';
-  return '#059669';
+function scoreColor(v) {
+  if (v === undefined) return "#1e293b";
+  if (v < 20) return "#7f1d1d";
+  if (v < 35) return "#c2410c";
+  if (v < 50) return "#d97706";
+  if (v < 65) return "#0ea5e9";
+  if (v < 80) return "#0284c7";
+  return "#10b981";
 }
-function scoreHex(v){
-  if(v<20) return '#f87171';
-  if(v<35) return '#fb923c';
-  if(v<50) return '#fbbf24';
-  if(v<65) return '#38bdf8';
-  if(v<80) return '#7dd3fc';
-  return '#34d399';
+
+function scoreTextColor(v) {
+  if (v >= 65) return "#10b981";
+  if (v >= 50) return "#38bdf8";
+  if (v >= 35) return "#fbbf24";
+  if (v >= 20) return "#fb923c";
+  return "#f87171";
 }
 
 let currentLayer = 'readiness';
-let currentCountry = null;
 
-function setLayer(id){
+function setLayer(id) {
   currentLayer = id;
-  ['readiness','access','governance','cocreator'].forEach(l=>{
-    const b = document.getElementById('btn-'+l);
-    b.classList.toggle('active', l===id);
-  });
-  updateColors();
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + id).classList.add('active');
+  updateMapColors();
   renderStats();
-  document.getElementById('spot').style.display='none';
-  currentCountry = null;
-  generateNarrative();
+  document.getElementById('spotlight').style.display = 'none';
 }
 
-function renderStats(){
+function renderStats() {
   const L = layers[currentLayer];
-  const vals = Object.values(L.countries).map(c=>c.v);
+  const vals = Object.values(L.countries).map(c => c.v);
   const avg = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-  const northRegs = ['North America','Europe','Oceania','Asia-Pacific'];
-  const nv = Object.values(L.countries).filter(c=>northRegs.some(r=>c.r===r||c.r.startsWith(r))).map(c=>c.v);
-  const sv = Object.values(L.countries).filter(c=>!northRegs.some(r=>c.r===r||c.r.startsWith(r))).map(c=>c.v);
-  const na = Math.round(nv.reduce((a,b)=>a+b,0)/nv.length);
-  const sa = Math.round(sv.reduce((a,b)=>a+b,0)/sv.length);
-  document.getElementById('stats').innerHTML=`
-    <div class="scard"><div class="slbl">Global average</div><div class="sval">${avg}<sub>/100</sub></div></div>
-    <div class="scard"><div class="slbl">Global North avg</div><div class="sval pos">${na}<sub>/100</sub></div></div>
-    <div class="scard"><div class="slbl">Global South avg</div><div class="sval neg">${sa}<sub>/100</sub></div></div>
-    <div class="scard"><div class="slbl">Equity gap</div><div class="sval gap">−${na-sa}<sub> pts</sub></div></div>
-  `;
-}
+  const northRegs = ["North America","Europe","Oceania","Asia-Pacific"];
+  const northVals = Object.values(L.countries).filter(c=>northRegs.some(r=>c.r===r||c.r.startsWith(r))).map(c=>c.v);
+  const southVals = Object.values(L.countries).filter(c=>!northRegs.some(r=>c.r===r||c.r.startsWith(r))).map(c=>c.v);
+  const northAvg = Math.round(northVals.reduce((a,b)=>a+b,0)/northVals.length);
+  const southAvg = Math.round(southVals.reduce((a,b)=>a+b,0)/southVals.length);
+  const gap = northAvg - southAvg;
 
-function showSpotlight(c, id){
-  currentCountry = {c, id};
-  const L = layers[currentLayer];
-  const otherLayers = ['readiness','access','governance','cocreator']
-    .filter(l=>l!==currentLayer)
-    .map(l=>{
-      const other = layers[l].countries[id];
-      return other ? `<div class="sp-pill"><strong>${layers[l].label.split(' ')[0]} ${layers[l].label.split(' ')[1]||''}</strong>: ${other.v}/100</div>` : '';
-    }).join('');
-
-  document.getElementById('spot').style.display='block';
-  document.getElementById('spot').innerHTML=`
-    <div class="sp-hdr">
-      <div>
-        <div class="sp-name">${c.n}</div>
-        <span class="sp-reg">${c.r}</span>
-      </div>
-      <div class="sp-right">
-        <div class="sp-score" style="color:${scoreHex(c.v)}">${c.v}<span style="font-size:13px;font-weight:400;color:var(--muted)">/100</span></div>
-        <button class="sp-close" onclick="document.getElementById('spot').style.display='none';currentCountry=null">✕ close</button>
-      </div>
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Global average</div>
+      <div class="stat-value">${avg}<span>/100</span></div>
     </div>
-    <p class="sp-note">${c.note}</p>
-    <div class="sp-pills">${otherLayers}</div>
-    <div class="sp-share">
-      <button class="share-btn" onclick="shareTwitter('${c.n}',${c.v})">
-        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        Share on X
-      </button>
-      <button class="share-btn" onclick="shareLinkedIn('${c.n}',${c.v})">
-        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        Share on LinkedIn
-      </button>
-      <button class="share-btn" id="copy-btn-${id}" onclick="copyLink('${c.n}',${c.v},'${id}')">
-        <svg viewBox="0 0 24 24"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
-        Copy link
-      </button>
+    <div class="stat-card">
+      <div class="stat-label">Global North avg</div>
+      <div class="stat-value positive">${northAvg}<span>/100</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Global South avg</div>
+      <div class="stat-value negative">${southAvg}<span>/100</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Equity gap</div>
+      <div class="stat-value gap">−${gap}<span> pts</span></div>
     </div>
   `;
-  document.getElementById('spot').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function shareTwitter(name, score){
-  const layer = layers[currentLayer].label;
-  const text = `${name} scores ${score}/100 on the AI Equity World Map (${layer}). The global equity gap between North and South is stark. Explore more 👇 @a4eai_org #AIEquity #GlobalSouth`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://www.a4eai.com')}`, '_blank');
-}
-function shareLinkedIn(name, score){
-  const text = `${name} scores ${score}/100 on the A4EAI AI Equity World Map. Explore the global divide in AI readiness, access, governance and co-creation. #AIEquity #EquitableAI`;
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://www.a4eai.com')}&summary=${encodeURIComponent(text)}`, '_blank');
-}
-function copyLink(name, score, id){
-  const text = `${name}: ${score}/100 on the A4EAI AI Equity Map (${layers[currentLayer].label}) — a4eai.com #AIEquity`;
-  navigator.clipboard.writeText(text).then(()=>{
-    const btn = document.getElementById('copy-btn-'+id);
-    if(btn){ btn.textContent='✓ Copied!'; btn.classList.add('copied'); setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML=`<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg> Copy link`; },2000); }
-  });
-}
+const svg = d3.select('#world-svg');
+const projection = d3.geoNaturalEarth1().scale(153).translate([480, 250]);
+const pathGen = d3.geoPath(projection);
+const tip = document.getElementById('tooltip');
+const mapWrap = document.getElementById('map-container');
 
-// ── AI Narrative Panel ──
-async function generateNarrative(){
+let features = [];
+
+function updateMapColors() {
   const L = layers[currentLayer];
-  const vals = Object.values(L.countries).map(c=>c.v);
-  const avg = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-  const northRegs = ['North America','Europe','Oceania','Asia-Pacific'];
-  const nv = Object.values(L.countries).filter(c=>northRegs.some(r=>c.r===r||c.r.startsWith(r))).map(c=>c.v);
-  const sv = Object.values(L.countries).filter(c=>!northRegs.some(r=>c.r===r||c.r.startsWith(r))).map(c=>c.v);
-  const na = Math.round(nv.reduce((a,b)=>a+b,0)/nv.length);
-  const sa = Math.round(sv.reduce((a,b)=>a+b,0)/sv.length);
-
-  const bottom5 = Object.entries(L.countries).sort((a,b)=>a[1].v-b[1].v).slice(0,5).map(e=>e[1].n).join(', ');
-  const top5 = Object.entries(L.countries).sort((a,b)=>b[1].v-a[1].v).slice(0,5).map(e=>e[1].n).join(', ');
-
-  const el = document.getElementById('narr-text');
-  el.innerHTML = '<div class="narr-loading"><div class="spinner"></div>Generating equity analysis…</div>';
-
-  const prompt = `You are a policy analyst at the Alliance for Equitable AI (A4EAI), a global advocacy organisation rooted in Pakistan and the Global South. Write a concise, compelling 3-paragraph analysis (no headings, no bullet points, just prose) of the current state of global AI equity on the dimension: "${L.label}" — defined as: ${L.desc}.
-
-Key data points:
-- Global average score: ${avg}/100
-- Global North average: ${na}/100  
-- Global South average: ${sa}/100
-- Equity gap: ${na-sa} points
-- Highest scoring countries: ${top5}
-- Lowest scoring countries: ${bottom5}
-- Data source: ${L.source}
-
-Write in the voice of A4EAI: thoughtful, evidence-based, advocating for Global South inclusion, without being preachy. Highlight what the gap means concretely, which regions are most left behind, and what structural changes are needed. Use <strong> tags sparingly for 2-3 key phrases only. Keep it under 180 words total.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.find(b=>b.type==='text')?.text || 'Analysis unavailable.';
-    el.innerHTML = text;
-  } catch(e) {
-    el.innerHTML = `<strong>Equity gap: ${na-sa} points.</strong> The Global North averages ${na}/100 on ${L.label} while the Global South averages just ${sa}/100 — a ${na-sa}-point structural divide that reflects decades of unequal investment in digital infrastructure, research capacity, and AI governance. Countries like ${bottom5.split(',')[0]} and ${bottom5.split(',')[1]} face not just technical barriers but a systematic exclusion from the conversations shaping AI's future. Closing this gap requires more than access programmes — it demands meaningful co-creation, local language AI, and Global South voices at the standards table.`;
-  }
-}
-
-// ── Map ──
-const svg = d3.select('#wsvg');
-const proj = d3.geoNaturalEarth1().scale(153).translate([480,250]);
-const pathGen = d3.geoPath(proj);
-const tip = document.getElementById('tip');
-const mc = document.getElementById('mc');
-
-function updateColors(){
-  const L = layers[currentLayer];
-  svg.selectAll('.cpth').attr('fill',d=>{
+  svg.selectAll('.country-path').attr('fill', d => {
     const id = String(d.id).padStart(3,'0');
     const c = L.countries[id];
-    return scoreColor(c?c.v:undefined);
+    return scoreColor(c ? c.v : undefined);
   });
 }
 
-d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world=>{
-  svg.selectAll('.cpth')
-    .data(topojson.feature(world,world.objects.countries).features)
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+  features = topojson.feature(world, world.objects.countries).features;
+  svg.selectAll('.country-path')
+    .data(features)
     .join('path')
-    .attr('class','cpth')
-    .attr('d',pathGen)
-    .attr('stroke','rgba(8,13,26,0.8)')
+    .attr('class','country-path')
+    .attr('d', pathGen)
+    .attr('stroke','rgba(10,14,26,0.7)')
     .attr('stroke-width','0.4')
-    .attr('fill','var(--no-data)')
-    .on('mousemove',function(event,d){
+    .attr('fill','#1e293b')
+    .on('mousemove', function(event, d) {
       const id = String(d.id).padStart(3,'0');
       const c = layers[currentLayer].countries[id];
-      if(!c){tip.style.display='none';return;}
-      const rect = mc.getBoundingClientRect();
-      const x = event.clientX-rect.left;
-      const y = event.clientY-rect.top;
-      tip.style.display='block';
-      tip.style.left=Math.min(x+14,rect.width-260)+'px';
-      tip.style.top=Math.max(y-95,8)+'px';
-      tip.innerHTML=`
-        <div class="tn">${c.n}</div>
-        <div class="tr">${c.r}</div>
-        <div class="tbar">
-          <div class="tbg"><div class="tfi" style="width:${c.v}%;background:${scoreColor(c.v)}"></div></div>
-          <span class="tsc" style="color:${scoreHex(c.v)}">${c.v}</span>
+      if (!c) { tip.style.display = 'none'; return; }
+      const rect = mapWrap.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      tip.style.display = 'block';
+      tip.style.left = Math.min(x + 14, rect.width - 250) + 'px';
+      tip.style.top = Math.max(y - 90, 8) + 'px';
+      tip.innerHTML = `
+        <div class="tip-name">${c.n}</div>
+        <div class="tip-region">${c.r}</div>
+        <div class="tip-bar-wrap">
+          <div class="tip-bar-bg"><div class="tip-bar-fill" style="width:${c.v}%;background:${scoreColor(c.v)};"></div></div>
+          <span class="tip-score" style="color:${scoreColor(c.v)};">${c.v}</span>
         </div>
-        <div class="tnt">${c.note.substring(0,120)}${c.note.length>120?'…':''}</div>
-        <div class="tsrc">Click for full details + share</div>
+        <div class="tip-note">${c.note}</div>
       `;
-      d3.select(this).attr('stroke','rgba(124,58,237,0.9)').attr('stroke-width','1.8');
+      d3.select(this).attr('stroke','rgba(139,92,246,0.8)').attr('stroke-width','1.5');
     })
-    .on('mouseleave',function(){
-      tip.style.display='none';
-      d3.select(this).attr('stroke','rgba(8,13,26,0.8)').attr('stroke-width','0.4');
+    .on('mouseleave', function() {
+      tip.style.display = 'none';
+      d3.select(this).attr('stroke','rgba(10,14,26,0.7)').attr('stroke-width','0.4');
     })
-    .on('click',function(event,d){
+    .on('click', function(event, d) {
       const id = String(d.id).padStart(3,'0');
       const c = layers[currentLayer].countries[id];
-      if(c) showSpotlight(c,id);
+      if (!c) return;
+      const sp = document.getElementById('spotlight');
+      sp.style.display = 'block';
+      sp.innerHTML = `
+        <div class="spot-header">
+          <div>
+            <div class="spot-name">${c.n}</div>
+            <span class="spot-region">${c.r}</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="spot-score" style="color:${scoreColor(c.v)};">${c.v}<span style="font-size:14px;font-weight:400;color:#64748b;">/100</span></div>
+            <button class="spot-close" onclick="document.getElementById('spotlight').style.display='none'">✕ close</button>
+          </div>
+        </div>
+        <p class="spot-note">${c.note}</p>
+      `;
+      sp.scrollIntoView({behavior:'smooth', block:'nearest'});
     });
-  updateColors();
+
+  updateMapColors();
   renderStats();
-  generateNarrative();
 });
 </script>
 </body>
