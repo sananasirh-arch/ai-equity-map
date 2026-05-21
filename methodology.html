@@ -388,6 +388,78 @@ body{
   .limit-grid{grid-template-columns:1fr;}
   .topnav .nav-links{display:none;}
 }
+  @media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0 1rem 4rem;
+  }
+
+  .sidebar {
+    position: static;
+    padding-top: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .sidebar nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sidebar nav a {
+    border: 1px solid var(--border2);
+    border-left: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .limit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .advisor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .version-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .v-date {
+    min-width: unset;
+  }
+
+  .dim-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .indicator-table {
+    font-size: 11px;
+  }
+
+  .indicator-table th,
+  .indicator-table td {
+    padding: 6px 8px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero {
+    padding: 2.5rem 1rem 2rem;
+  }
+
+  .formula {
+    font-size: 10px;
+    overflow-x: auto;
+  }
+}
 </style>
 </head>
 <body>
