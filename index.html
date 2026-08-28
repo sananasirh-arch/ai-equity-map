@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Global AI Equity Map — A4EAI</title>
+<title>AI Equity World Map — A4EAI</title>
 <meta name="description" content="An interactive map visualising the global AI equity divide. By the Alliance for Equitable AI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -175,7 +175,7 @@ h1 em{font-style:italic;color:var(--accent3);}
   <!-- Header -->
   <div class="hdr">
     <div class="pill"><div class="pill-dot"></div>A4EAI Research Tool</div>
-    <h1>Global <em>AI Equity</em> Map</h1>
+    <h1>The <em>AI Equity</em> World Map</h1>
     <p class="sub">Who is shaping AI — and who is being shaped by it? Click any country to explore its story.</p>
   </div>
 
@@ -301,7 +301,7 @@ h1 em{font-style:italic;color:var(--accent3);}
     <div class="an-body"><div id="an-text"><div class="an-loading"><div class="spin"></div>Loading analysis…</div></div></div>
   </div>
 
-  <p class="ft">AI Readiness scores from the <a href="methodology.html" target="_blank">Oxford Insights Government AI Readiness Index 2024</a> (CC BY-SA 4.0). Access, Governance &amp; Co-creator are A4EAI composite scores. <a href="https://a4eai.com/ai-equity-map-methodology" target="_blank">Full methodology →</a></p>
+  <p class="ft">AI Readiness scores from the <a href="methodology.html" target="_blank">Oxford Insights Government AI Readiness Index 2024</a> (CC BY-SA 4.0). Access, Governance &amp; Co-creator are A4EAI composite scores. <a href="https://a4eai.com/ai-equity-map-methodology target="_blank">Full methodology →</a></p>
   <div class="brand"><div class="bdot"></div><span class="btxt">Alliance for Equitable AI &nbsp;·&nbsp; <strong>a4eai.com</strong></span><div class="bdot"></div></div>
 </div>
 
@@ -375,9 +375,9 @@ const countries={
 const map=L.map('map',{zoomControl:true,scrollWheelZoom:false,minZoom:1,maxZoom:6}).setView([20,10],2);
 
 // Dark tile layer
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
-  attribution:'©<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ©<a href="https://carto.com/attributions">CARTO</a>',
-  subdomains:'abcd',maxZoom:20
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, FAO, NOAA, USGS',
+  maxZoom:16,maxNativeZoom:16
 }).addTo(map);
 
 let currentLayer='readiness';
